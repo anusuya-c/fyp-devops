@@ -1,0 +1,74 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Django migrations (optional: keep if you want to version them)
+**/migrations/
+!*/migrations/__init__.py
+
+# Environment variables & settings
+# .env
+# *.env
+# .env.*
+
+# SQLite database (keep if using for dev)
+# *.sqlite3
+# db.sqlite3
+
+# Django secret key/settings
+secret.py
+settings_local.py
+
+# Media and static files (generated at runtime)
+media/
+staticfiles/
+static/
+
+# Logs and temp files
+*.log
+*.pot
+*.pyc
+*.pyo
+*.mo
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Test and coverage
+.coverage
+.tox/
+.nox/
+.cache/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+htmlcov/
+
+# Virtual environment folders
+.idea/
+.vscode/
+*.code-workspace
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# Pip and dependency
+pip-log.txt
+pip-delete-this-directory.txt
+Pipfile.lock
+poetry.lock
