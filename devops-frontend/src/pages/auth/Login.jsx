@@ -12,12 +12,12 @@ import {
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
-    useremail: "",
+    username: "",
     userpassword: "",
   });
 
   const [errors, setErrors] = useState({
-    useremail: "",
+    username: "",
     userpassword: "",
     general: "",
   });
@@ -39,17 +39,14 @@ export default function LoginPage() {
   const validateForm = () => {
     let isValid = true;
     const newErrors = {
-      useremail: "",
+      username: "",
       userpassword: "",
       general: "",
     };
 
     // Email validation
-    if (!formData.useremail) {
-      newErrors.useremail = "Email is required";
-      isValid = false;
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.useremail)) {
-      newErrors.useremail = "Invalid email format";
+    if (!formData.username) {
+      newErrors.username = "Username is required";
       isValid = false;
     }
 
@@ -80,7 +77,7 @@ export default function LoginPage() {
     setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
 
     const payload = {
-      useremail: formData.useremail,
+      username: formData.username,
       userpassword: formData.userpassword,
     };
 
@@ -100,7 +97,7 @@ export default function LoginPage() {
     //  });
 
     // Optionally clear the form after successful submission
-    // setFormData({ useremail: '', userpassword1: '', userpassword2: '' });
+    // setFormData({ username: '', userpassword1: '', userpassword2: '' });
   };
 
   return (
@@ -114,12 +111,12 @@ export default function LoginPage() {
           <Stack>
             <TextInput
               required
-              label="Email"
-              placeholder="your@email.com"
-              name="useremail"
-              value={formData.useremail}
+              label="Username"
+              placeholder="Your username"
+              name="username"
+              value={formData.username}
               onChange={handleChange}
-              error={errors.useremail || null}
+              error={errors.username || null}
             />
 
             <PasswordInput
