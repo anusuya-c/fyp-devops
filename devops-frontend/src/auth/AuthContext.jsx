@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { api } from "../api/api";
 import { hasTokenExpired, setLastLoginTime } from "../utils/utils";
 import { useNavigate } from "react-router";
+import { notifications } from "@mantine/notifications";
 
 const AuthContext = createContext(undefined);
 
@@ -18,10 +19,10 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = async (username, password) => {
+  const login = async (payload) => {
     try {
-      const response = await api.login({ username, password });
-      const { data } = response.data;
+      const response = await api.login(payload);
+      const data  = response.data;
       if (data && data.access) {
         const userData = {
           id: data.pk,
@@ -34,11 +35,17 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("access_token", data.access);
         setLastLoginTime();
       } else {
-        toast.error("Login Credentials Invalid");
+        notifications.show({
+          title: 'Login Error',
+          message: `Login Failed`
+        })
       }
     } catch (error) {
       console.error("Login failed:", error);
-      toast.error("Login Failed, please try again");
+      notifications.show({
+        title: 'Login Error',
+        message: `Login Failed`
+      })
     }
   };
 

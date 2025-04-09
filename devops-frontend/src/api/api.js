@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://localhost:8000";
+const API_BASE_URL = "http://localhost:8000";
 const API_VERSION = "/api/";
 
 const apiClient = axios.create({
@@ -20,8 +20,8 @@ apiClient.interceptors.request.use((config) => {
 
 export const api = {
     // Authentication API
-    login: (data) => apiClient.post("/authenticate/login/", data),
+    login: (data) => apiClient.post("/auth/login/", data),
 
-    register: (data) => apiClient.post("/authenticate/registration/", data)
+    register: (data) => apiClient.post("/auth/registration/", data)
 
 }

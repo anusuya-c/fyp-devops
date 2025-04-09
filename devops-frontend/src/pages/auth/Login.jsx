@@ -9,8 +9,10 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
+import { useAuth } from "../../auth/AuthContext";
 
 export default function LoginPage() {
+  const {login} = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     userpassword: "",
@@ -62,7 +64,7 @@ export default function LoginPage() {
     return isValid;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!validateForm()) {
@@ -78,26 +80,10 @@ export default function LoginPage() {
 
     const payload = {
       username: formData.username,
-      userpassword: formData.userpassword,
+      password: formData.userpassword,
     };
 
-    console.log("Submitting JSON Payload:", JSON.stringify(payload, null, 2));
-
-    // Example: Send payload to an API endpoint
-    // fetch('/api/login', { // Or '/api/signup'
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(payload),
-    // })
-    // .then(response => response.json())
-    // .then(data => console.log('Success:', data))
-    // .catch(error => {
-    //     console.error('Error:', error);
-    //     setErrors(prev => ({...prev, general: 'Submission failed. Please try again.'}))
-    //  });
-
-    // Optionally clear the form after successful submission
-    // setFormData({ username: '', userpassword1: '', userpassword2: '' });
+   await login(payload)
   };
 
   return (
@@ -123,7 +109,7 @@ export default function LoginPage() {
               required
               label="Password"
               placeholder="Your password"
-              name="userpassword1"
+              name="userpassword"
               value={formData.userpassword}
               onChange={handleChange}
               error={errors.userpassword || null}
@@ -136,7 +122,7 @@ export default function LoginPage() {
             )}
 
             <Button type="submit" fullWidth mt="xl">
-              Register
+              Login
             </Button>
           </Stack>
         </form>

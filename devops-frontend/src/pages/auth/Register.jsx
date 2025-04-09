@@ -9,8 +9,12 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
+import { api } from "../../api/api";
+import { notifications } from "@mantine/notifications";
+import { useNavigate } from "react-router";
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -83,7 +87,7 @@ export default function RegisterPage() {
   };
 
   // Handle form submission
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!validateForm()) {
@@ -104,23 +108,28 @@ export default function RegisterPage() {
       password2: formData.password2,
     };
 
-    console.log("Submitting JSON Payload:", JSON.stringify(payload, null, 2));
+    try {
+      await api.register(payload);
+      notifications.show({
+        title: 'Registration Successful',
+        message: `User ${formData.username} has been registerd successfully!`
+      })
 
-    // Example: Send payload to an API endpoint
-    // fetch('/api/login', { // Or '/api/signup'
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(payload),
-    // })
-    // .then(response => response.json())
-    // .then(data => console.log('Success:', data))
-    // .catch(error => {
-    //     console.error('Error:', error);
-    //     setErrors(prev => ({...prev, general: 'Submission failed. Please try again.'}))
-    //  });
+      setFormData({
+        username: "",
+        email: "",
+        password1: "",
+        password2: "",
+      });
 
-    // Optionally clear the form after successful submission
-    // setFormData({ useremail: '', userpassword1: '', userpassword2: '' });
+      navigate('/login')
+
+    } catch (error){
+      notifications.show({
+        title: 'Registration Failed',
+        message: 'There was an error while trying to Register'
+      })
+    }
   };
 
   return (

@@ -16,6 +16,7 @@ import { Navigate } from "react-router";
 function App() {
   const ProtectedRoute = ({ Component }) => {
     const { isAuthenticated } = useAuth();
+    console.log("isAuth", isAuthenticated)
     return isAuthenticated ? Component : <Navigate to="/login" replace />;
   };
 
