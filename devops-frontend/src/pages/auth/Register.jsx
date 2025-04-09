@@ -12,15 +12,17 @@ import {
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    useremail: "",
-    userpassword1: "",
-    userpassword2: "",
+    username: "",
+    email: "",
+    password1: "",
+    password2: "",
   });
 
   const [errors, setErrors] = useState({
-    useremail: "",
-    userpassword1: "",
-    userpassword2: "",
+    username: "",
+    email: "",
+    password1: "",
+    password2: "",
     general: "",
   });
 
@@ -41,37 +43,38 @@ export default function RegisterPage() {
   const validateForm = () => {
     let isValid = true;
     const newErrors = {
-      useremail: "",
-      userpassword1: "",
-      userpassword2: "",
+      username: "",
+      email: "",
+      password1: "",
+      password2: "",
       general: "",
     };
 
     // Email validation
-    if (!formData.useremail) {
-      newErrors.useremail = "Email is required";
+    if (!formData.email) {
+      newErrors.email = "Email is required";
       isValid = false;
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.useremail)) {
-      newErrors.useremail = "Invalid email format";
-      isValid = false;
-    }
-
-    if (!formData.userpassword1) {
-      newErrors.userpassword1 = "Password is required";
-      isValid = false;
-    } else if (formData.userpassword1.length < 6) {
-      newErrors.userpassword1 = "Password must be at least 6 characters";
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newErrors.email = "Invalid email format";
       isValid = false;
     }
 
-    if (!formData.userpassword2) {
-      newErrors.userpassword2 = "Password confirmation is required";
+    if (!formData.password1) {
+      newErrors.password1 = "Password is required";
+      isValid = false;
+    } else if (formData.password1.length < 6) {
+      newErrors.password1 = "Password must be at least 6 characters";
+      isValid = false;
+    }
+
+    if (!formData.password2) {
+      newErrors.password2 = "Password confirmation is required";
       isValid = false;
     } else if (
-      formData.userpassword1 &&
-      formData.userpassword1 !== formData.userpassword2
+      formData.password1 &&
+      formData.password1 !== formData.password2
     ) {
-      newErrors.userpassword2 = "Passwords do not match";
+      newErrors.password2 = "Passwords do not match";
       isValid = false;
     }
 
@@ -95,9 +98,10 @@ export default function RegisterPage() {
     setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
 
     const payload = {
-      useremail: formData.useremail,
-      userpassword1: formData.userpassword1,
-      userpassword2: formData.userpassword2,
+      username: formData.username,
+      email: formData.email,
+      password1: formData.password1,
+      password2: formData.password2,
     };
 
     console.log("Submitting JSON Payload:", JSON.stringify(payload, null, 2));
@@ -130,32 +134,41 @@ export default function RegisterPage() {
           <Stack>
             <TextInput
               required
+              label="Username"
+              placeholder="devops-engineer"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              error={errors.username || null}
+            />
+            <TextInput
+              required
               label="Email"
               placeholder="your@email.com"
-              name="useremail"
-              value={formData.useremail}
+              name="email"
+              value={formData.email}
               onChange={handleChange}
-              error={errors.useremail || null}
+              error={errors.email || null}
             />
 
             <PasswordInput
               required
               label="Password"
               placeholder="Your password"
-              name="userpassword1"
-              value={formData.userpassword1}
+              name="password1"
+              value={formData.password1}
               onChange={handleChange}
-              error={errors.userpassword1 || null}
+              error={errors.password1 || null}
             />
 
             <PasswordInput
               required
               label="Confirm Password"
               placeholder="Confirm your password"
-              name="userpassword2"
-              value={formData.userpassword2}
+              name="password2"
+              value={formData.password2}
               onChange={handleChange}
-              error={errors.userpassword2 || null}
+              error={errors.password2 || null}
             />
 
             {errors.general && (
