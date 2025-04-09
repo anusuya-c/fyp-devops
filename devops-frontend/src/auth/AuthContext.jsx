@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { api } from "../api/api";
 import { hasTokenExpired, setLastLoginTime } from "../utils/utils";
+import { useNavigate } from "react-router";
 
 const AuthContext = createContext(undefined);
 
@@ -12,7 +13,6 @@ export const AuthProvider = ({ children }) => {
     const tokenExpired = hasTokenExpired();
 
     if (!tokenExpired && accessToken) {
-      
     } else {
       logout();
     }
