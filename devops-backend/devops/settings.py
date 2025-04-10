@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,6 +26,10 @@ SECRET_KEY = 'django-insecure-dui4cd#m(3^9#mwqzscp)tr@lfq0uf$@4rh00^zd_yoq&$7(%r
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+JENKINS_URL = os.environ.get('JENKINS_URL', 'http://23.21.183.151:8080') 
+JENKINS_USERNAME = os.environ.get('JENKINS_USERNAME', 'admin')           
+JENKINS_API_TOKEN = os.environ.get('JENKINS_API_TOKEN', '11ba358712d0b24daa8ed8d7fad729def5')
 
 
 # Application definition
@@ -50,7 +54,8 @@ INSTALLED_APPS = [
     'corsheaders',               # Add CORS headers
 
     # my apps
-    'accounts'
+    'accounts',
+    'jenkins_api'
 ]
 
 REST_AUTH = {
@@ -94,6 +99,19 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # Ensure ONLY JWT Authentication is used by default for API requests
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        # Set a default permission if you like, or leave it commented
+        # if you prefer setting permissions per-view (as you are doing)
+        # 'rest_framework.permissions.AllowAny',
+        # 'rest_framework.permissions.IsAuthenticated',
+    ]
+    # You can add other DRF settings here if needed (pagination, etc.)
+}
 
 
 SITE_ID = 1
