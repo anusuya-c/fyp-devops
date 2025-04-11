@@ -1,0 +1,84 @@
+{
+    "builds": [
+      {
+        "number": 45,
+        "url": "http://23.21.183.151:8080/job/pipeline/45/",
+        "start_time_ms": 1744306969911,
+        "end_time_ms": 1744307260932,
+        "duration_ms": 291021,
+        "result": "SUCCESS",
+        "building": false,
+        "description": null,
+        "commit_messages": []
+      },
+      {
+        "number": 44,
+        "url": "http://23.21.183.151:8080/job/pipeline/44/",
+        "start_time_ms": 1743567090455,
+        "end_time_ms": 1743567161551,
+        "duration_ms": 71096,
+        "result": "ABORTED",
+        "building": false,
+        "description": null,
+        "commit_messages": []
+      },
+      {
+        "number": 43,
+        "url": "http://23.21.183.151:8080/job/pipeline/43/",
+        "start_time_ms": 1743311712884,
+        "end_time_ms": 1743311780738,
+        "duration_ms": 67854,
+        "result": "SUCCESS",
+        "building": false,
+        "description": null,
+        "commit_messages": []
+      },
+      {
+        "number": 42,
+        "url": "http://23.21.183.151:8080/job/pipeline/42/",
+        "start_time_ms": 1743241324876,
+        "end_time_ms": 1743241364783,
+        "duration_ms": 39907,
+        "result": "SUCCESS",
+        "building": false,
+        "description": null,
+        "commit_messages": []
+      },
+      {
+        "number": 41,
+        "url": "http://23.21.183.151:8080/job/pipeline/41/",
+        "start_time_ms": 1743240951463,
+        "end_time_ms": 1743240993188,
+        "duration_ms": 41725,
+        "result": "SUCCESS",
+        "building": false,
+        "description": null,
+        "commit_messages": []
+      },
+      {
+        "number": 39,
+        "url": "http://23.21.183.151:8080/job/pipeline/39/",
+        "start_time_ms": 1743239997672,
+        "end_time_ms": 1743240035196,
+        "duration_ms": 37524,
+        "result": "FAILURE",
+        "building": false,
+        "description": null,
+        "commit_messages": []
+      }
+    ]
+  }
+
+  {
+    "projectKey": "website",
+    "metrics": {
+      "coverage": "0.0",
+      "bugs": "3",
+      "alert_status": "ERROR",
+      "duplicated_lines_density": "0.0",
+      "code_smells": "5",
+      "security_rating": "3.0",
+      "vulnerabilities": "2",
+      "security_hotspots": "0"
+    }
+  }

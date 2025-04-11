@@ -31,6 +31,42 @@ JENKINS_URL = os.environ.get('JENKINS_URL', 'http://23.21.183.151:8080')
 JENKINS_USERNAME = os.environ.get('JENKINS_USERNAME', 'admin')           
 JENKINS_API_TOKEN = os.environ.get('JENKINS_API_TOKEN', '11ba358712d0b24daa8ed8d7fad729def5')
 
+SONARQUBE_URL = os.environ.get("SONARQUBE_URL", "http://23.21.183.151:9000") 
+SONARQUBE_API_TOKEN = os.environ.get("SONARQUBE_API_TOKEN", "squ_9341a1447d4d1a2b5ad05cf537b54e0ebbcb4773")
+
+
+KUBECONFIG_FILENAME = "k3s_django_config.yaml"
+DEFAULT_KUBECONFIG_PATH = str(BASE_DIR / KUBECONFIG_FILENAME )
+KUBERNETES_CONFIG_PATH = os.environ.get("KUBERNETES_CONFIG_PATH", DEFAULT_KUBECONFIG_PATH)
+
+EC2_INSTANCE_IDS = ['i-0b1ed2204719f11dc', 'i-0babfa0f37936acef']
+
+ARGOCD_SERVER_URL = os.getenv("ARGOCD_SERVER_URL", 'http://44.194.151.195:31665')
+ARGOCD_USERNAME = os.getenv("ARGOCD_USERNAME", 'admin')
+ARGOCD_PASSWORD = os.getenv("ARGOCD_PASSWORD", 'u2VkWswyq1uiGnSF')
+ARGOCD_SSL_VERIFY = os.getenv("ARGOCD_SSL_VERIFY", "True").lower() in ('true', '1', 't')
+ARGOCD_TOKEN_CACHE_TIMEOUT = int(os.getenv("ARGOCD_TOKEN_CACHE_TIMEOUT", 60 * 60 * 23))
+
+CACHES = {
+    'default': {
+        # Use LocMemCache for development (not shared between processes)
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'argocd-token-cache', # Unique identifier for this cache instance
+        'TIMEOUT': ARGOCD_TOKEN_CACHE_TIMEOUT,
+    }
+}
+
+SONARQUBE_DEFAULT_METRIC_KEYS = [
+    'bugs',
+    'vulnerabilities',
+    'security_hotspots',
+    'code_smells',
+    'coverage',
+    'duplicated_lines_density',
+    'security_rating',
+    'alert_status', 
+]
+
 
 # Application definition
 
@@ -55,7 +91,11 @@ INSTALLED_APPS = [
 
     # my apps
     'accounts',
-    'jenkins_api'
+    'jenkins_api',
+    'sonarqube_integration',
+    'kubernetes_integration',
+    'ec2_metrics',
+    'argocd_api',   
 ]
 
 REST_AUTH = {

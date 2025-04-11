@@ -1,0 +1,31 @@
+{
+    "jobs": [
+      {
+        "name": "pipeline",
+        "url": "http://23.21.183.151:8080/job/pipeline/"
+      },
+      {
+        "name": "project1",
+        "url": "http://23.21.183.151:8080/job/project1/"
+      }
+    ]
+  }
+
+  
+  
+  {
+    "projects": [
+      {
+        "key": "website",
+        "name": "website",
+        "qualifier": "TRK",
+        "visibility": "public"
+      },
+      {
+        "key": "website1",
+        "name": "website1",
+        "qualifier": "TRK",
+        "visibility": "public"
+      }
+    ]
+  }

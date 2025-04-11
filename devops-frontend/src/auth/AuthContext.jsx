@@ -8,6 +8,7 @@ const AuthContext = createContext(undefined);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const accessToken = localStorage.getItem("access_token");
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (payload) => {
     try {
+      setLoading(true);
       const response = await api.login(payload);
       const data  = response.data;
       if (data && data.access) {
@@ -46,6 +48,8 @@ export const AuthProvider = ({ children }) => {
         title: 'Login Error',
         message: `Login Failed`
       })
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,7 +61,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAuthenticated: !!user }}
+      value={{ user, login, logout, loading, setLoading, isAuthenticated: !!user }}
     >
       {children}
     </AuthContext.Provider>

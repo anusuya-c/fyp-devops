@@ -22,6 +22,13 @@ export const api = {
     // Authentication API
     login: (data) => apiClient.post("/auth/login/", data),
 
-    register: (data) => apiClient.post("/auth/registration/", data)
+    register: (data) => apiClient.post("/auth/registration/", data),
 
+    getJenkinsJobs: () => apiClient.get("/jenkins/jobs/"),
+
+    getJenkinsJobDetails: (jobName) => apiClient.get(`/jenkins/jobs/${jobName}/details/`),
+
+    getSonarQubeProjects: () => apiClient.get("/sonarqube/projects/"),
+
+    getSonarQubeProjectDetails: (projectKey) =>  apiClient.get(`/sonarqube/projects/${projectKey}/details/`),
 }

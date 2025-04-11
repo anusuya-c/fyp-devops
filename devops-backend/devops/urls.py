@@ -22,4 +22,8 @@ urlpatterns = [
      path('api/auth/', include('dj_rest_auth.urls')),
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
     path('api/jenkins/', include('jenkins_api.urls')),
+    path('api/sonarqube/', include('sonarqube_integration.urls')),
+    path('api/kubernetes/', include('kubernetes_integration.urls')),
+    path('api/ec2/', include('ec2_metrics.urls')),
+    path('api/argocd/', include('argocd_api.urls'))
 ]
