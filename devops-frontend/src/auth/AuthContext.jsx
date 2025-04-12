@@ -3,6 +3,7 @@ import { api } from "../api/api";
 import { hasTokenExpired, setLastLoginTime } from "../utils/utils";
 import { useNavigate } from "react-router";
 import { notifications } from "@mantine/notifications";
+import axios from "axios";
 
 const AuthContext = createContext(undefined);
 
@@ -23,7 +24,8 @@ export const AuthProvider = ({ children }) => {
   const login = async (payload) => {
     try {
       setLoading(true);
-      const response = await api.login(payload);
+      //const response = await api.login(payload);
+      const response = await axios.post('http://localhost:8000/api/auth/login', payload);
       const data  = response.data;
       if (data && data.access) {
         const userData = {

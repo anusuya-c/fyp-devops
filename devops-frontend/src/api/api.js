@@ -20,9 +20,9 @@ apiClient.interceptors.request.use((config) => {
 
 export const api = {
     // Authentication API
-    login: (data) => apiClient.post("/auth/login/", data),
+    login: (data) => axios.post(`${API_BASE_URL}${API_VERSION}auth/login/`, data),
 
-    register: (data) => apiClient.post("/auth/registration/", data),
+    register: (data) => axios.post(`${API_BASE_URL}${API_VERSION}auth/registration/`, data),
 
     getJenkinsJobs: () => apiClient.get("/jenkins/jobs/"),
 

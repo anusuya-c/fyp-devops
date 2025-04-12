@@ -7,10 +7,10 @@ export default function HomePage() {
             <AppSidebar />
             <main style={{ flexGrow: 1, padding: 'var(--mantine-spacing-md)', overflowY: 'auto' }}>
                 <div>
-                    <h1>Chuduus homepage</h1>
-                    <p>chuduu is the best</p>
+                    <h1>DevSecOps Security Monitor</h1>
+                    <p>-Secure -Automate -Monitor</p>
                 </div>
-                <div>Chudu queen</div>
+                <div></div>
             </main>
         </div>
     )

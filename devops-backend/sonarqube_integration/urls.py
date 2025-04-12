@@ -1,4 +1,3 @@
-# sonarqube_integration/urls.py
 from django.urls import path
 from . import views # Import the views from the same app
 
