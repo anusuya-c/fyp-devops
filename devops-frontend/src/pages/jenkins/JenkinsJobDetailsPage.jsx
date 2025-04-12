@@ -132,7 +132,6 @@ export default function JenkinsJobDetailsPage() {
                       <Table.Th>Start Time</Table.Th>
                       <Table.Th>Duration</Table.Th>
                       <Table.Th>End Time</Table.Th>
-                      <Table.Th>Description</Table.Th>
                     </Table.Tr>
                   </Table.Thead>
                   <Table.Tbody>{rows}</Table.Tbody>

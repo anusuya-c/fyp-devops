@@ -144,7 +144,7 @@ export default function RegisterPage() {
             <TextInput
               required
               label="Username"
-              placeholder="devops-engineer"
+              placeholder="Your Username"
               name="username"
               value={formData.username}
               onChange={handleChange}
