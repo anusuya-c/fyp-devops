@@ -12,7 +12,9 @@ import {
   IconGauge,       
   IconCode,        
   IconNotes,        
-  IconRadar2
+  IconRadar2,
+  IconHome,
+  IconDashboard
 } from '@tabler/icons-react';
 import { Code, Group } from '@mantine/core';
 // Import NavLink from react-router-dom for navigation
@@ -25,7 +27,8 @@ import classes from './AppSidebar.module.css'; // Make sure the path is correct
 
 
 const data = [
-  { path: '/jenkins-jobs', label: 'Jenkins Jobs', icon: IconCode }, // Match paths in App.jsx
+  {path: '/home', label: 'Dashboard', icon: IconDashboard},
+  { path: '/jenkins-jobs', label: 'Jenkins Jobs', icon: IconCode }, 
   { path: '/sonarqube-projects', label: 'SonarQube projects', icon: IconRadar2 },
   { path: '/other', label: 'Other Section', icon: IconNotes }, 
 ];
