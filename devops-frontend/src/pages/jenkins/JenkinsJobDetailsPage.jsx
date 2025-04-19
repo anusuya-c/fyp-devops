@@ -82,9 +82,6 @@ export default function JenkinsJobDetailsPage() {
       <Table.Td>
         <Text size="sm">{formatTimestamp(build.end_time_ms)}</Text>
       </Table.Td>
-      <Table.Td>
-        <Text size="sm" c="dimmed">{build.description || '-'}</Text>
-      </Table.Td>
     </Table.Tr>
   ));
 

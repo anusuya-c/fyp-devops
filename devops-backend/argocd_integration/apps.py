@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ArgocdApiConfig(AppConfig):
+class ArgocdIntegrationConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'argocd_api'
+    name = 'argocd_integration'

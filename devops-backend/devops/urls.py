@@ -25,5 +25,5 @@ urlpatterns = [
     path('api/sonarqube/', include('sonarqube_integration.urls')),
     path('api/kubernetes/', include('kubernetes_integration.urls')),
     path('api/ec2/', include('ec2_metrics.urls')),
-    path('api/argocd/', include('argocd_api.urls'))
+    path('api/argocd/', include('argocd_integration.urls')),
 ]

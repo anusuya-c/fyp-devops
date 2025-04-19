@@ -18,4 +18,45 @@ export function setLastLoginTime() {
   
     return timeDifference >= twentyFourHoursInMs;
   }
+
+// src/utils/argoUtils.js
+
+/**
+ * Returns a Mantine color name based on Argo CD sync status.
+ * @param {string | undefined} status - The sync status string (e.g., 'Synced', 'OutOfSync').
+ * @returns {string} Mantine color name.
+ */
+export const getSyncStatusColor = (status) => {
+  switch (status?.toLowerCase()) {
+    case 'synced':
+      return 'green';
+    case 'outofsync':
+      return 'orange';
+    default:
+      return 'gray'; // For Unknown, Progressing, etc.
+  }
+};
+
+/**
+ * Returns a Mantine color name based on Argo CD health status.
+ * @param {string | undefined} status - The health status string (e.g., 'Healthy', 'Progressing', 'Degraded').
+ * @returns {string} Mantine color name.
+ */
+export const getHealthStatusColor = (status) => {
+  switch (status?.toLowerCase()) {
+    case 'healthy':
+      return 'green';
+    case 'progressing':
+      return 'blue';
+    case 'degraded':
+      return 'red';
+    case 'suspended':
+      return 'grape'; // Or purple
+    case 'missing':
+    case 'unknown':
+    default:
+      return 'gray';
+  }
+};
+
   

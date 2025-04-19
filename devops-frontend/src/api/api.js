@@ -31,4 +31,6 @@ export const api = {
     getSonarQubeProjects: () => apiClient.get("/sonarqube/projects/"),
 
     getSonarQubeProjectDetails: (projectKey) =>  apiClient.get(`/sonarqube/projects/${projectKey}/details/`),
+
+    getArgocdApplications: () => apiClient.get("/argocd/applications/")
 }

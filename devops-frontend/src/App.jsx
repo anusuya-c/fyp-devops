@@ -18,6 +18,7 @@ import { PlaceholderPage } from "./pages/PlaceholderPage";
 import JenkinsJobDetailsPage from "./pages/jenkins/JenkinsJobDetailsPage";
 import SonarQubeProjectsPage from "./pages/sonarqube/SonarQubeProjectsPage";
 import SonarQubeProjectDetailsPage from "./pages/sonarqube/SonarQubeProjectDetailsPage";
+import ArgoCdApplicationsPage from "./pages/argocd/ArgoCdApplicationsPage";
 
 function App() {
   const ProtectedRoute = ({ children }) => {
@@ -73,6 +74,10 @@ function App() {
             <Route
               path="/sonarqube-projects/:projectKey/details"
               element={<ProtectedRoute><SonarQubeProjectDetailsPage /></ProtectedRoute>}
+            />
+            <Route
+              path="/argocd"
+              element={<ProtectedRoute><ArgoCdApplicationsPage /></ProtectedRoute>}
             />
             <Route
               path="/settings"

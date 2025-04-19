@@ -41,11 +41,13 @@ KUBERNETES_CONFIG_PATH = os.environ.get("KUBERNETES_CONFIG_PATH", DEFAULT_KUBECO
 
 EC2_INSTANCE_IDS = ['i-0b1ed2204719f11dc', 'i-0babfa0f37936acef']
 
-ARGOCD_SERVER_URL = os.getenv("ARGOCD_SERVER_URL", 'http://44.194.151.195:31665')
+ARGOCD_URL = os.getenv("ARGOCD_SERVER_URL", 'https://44.194.151.195:31931')
 ARGOCD_USERNAME = os.getenv("ARGOCD_USERNAME", 'admin')
 ARGOCD_PASSWORD = os.getenv("ARGOCD_PASSWORD", 'u2VkWswyq1uiGnSF')
 ARGOCD_SSL_VERIFY = os.getenv("ARGOCD_SSL_VERIFY", "True").lower() in ('true', '1', 't')
 ARGOCD_TOKEN_CACHE_TIMEOUT = int(os.getenv("ARGOCD_TOKEN_CACHE_TIMEOUT", 60 * 60 * 23))
+ARGOCD_API_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcmdvY2QiLCJzdWIiOiJhZG1pbjphcGlLZXkiLCJuYmYiOjE3NDUwODEyMTIsImlhdCI6MTc0NTA4MTIxMiwianRpIjoiZDVlZDI5MGMtZWYwNS00ODdjLWEzZmUtOWI0ZDEyZGFmYmZlIn0.7-lNPbo8Mn6WhiXnPGXX7xSPgK9s3uW9d3QibGZalxg'
+ARGOCD_VERIFY_SSL = False
 
 CACHES = {
     'default': {
@@ -95,7 +97,7 @@ INSTALLED_APPS = [
     'sonarqube_integration',
     'kubernetes_integration',
     'ec2_metrics',
-    'argocd_api',   
+    'argocd_integration',   
 ]
 
 REST_AUTH = {

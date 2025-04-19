@@ -5,6 +5,7 @@ import { api } from "../api/api";
 import BuildStatusChart from "../components/dashboard/BuildStatusChart";
 import { Grid } from "@mantine/core";
 import QualityMetricsRadarChart from "../components/dashboard/QualityMetricsRadarChart";
+import ReportGenerator from "../components/ReportGenerator";
 
 export default function HomePage() {
 
@@ -67,9 +68,12 @@ export default function HomePage() {
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <AppSidebar />
       <main style={{ flexGrow: 1, padding: 'var(--mantine-spacing-md)', overflowY: 'auto' }}>
-        <div>
-          <h1>DevSecOps Security Monitor</h1>
-          <p>-Secure -Automate -Monitor</p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+          <div>
+            <h1>DevSecOps Security Monitor</h1>
+            <p>-Secure -Automate -Monitor</p>
+          </div>
+          <ReportGenerator />
         </div>
         <div>
           <AverageBuildDuration builds={builds} />
