@@ -3,9 +3,9 @@ import { AppSidebar } from "../components/AppSidebar";
 import AverageBuildDuration from "../components/dashboard/AverageBuildDuration";
 import { api } from "../api/api";
 import BuildStatusChart from "../components/dashboard/BuildStatusChart";
-import { Grid } from "@mantine/core";
-import QualityMetricsRadarChart from "../components/dashboard/QualityMetricsRadarChart";
+import { Card, Grid, Stack, Text } from "@mantine/core";
 import ReportGenerator from "../components/ReportGenerator";
+import QualityMetricsBarChart from "../components/dashboard/QualityMetricsBarChart";
 
 export default function HomePage() {
 
@@ -68,23 +68,32 @@ export default function HomePage() {
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <AppSidebar />
       <main style={{ flexGrow: 1, padding: 'var(--mantine-spacing-md)', overflowY: 'auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <h1>DevSecOps Security Monitor</h1>
             <p>-Secure -Automate -Monitor</p>
           </div>
-          <ReportGenerator />
-        </div>
-        <div>
-          <AverageBuildDuration builds={builds} />
         </div>
         <Grid>
+          <Grid.Col span={{ base: 12, md: 6 }} mt="md">
+            <AverageBuildDuration builds={builds} />
+          </Grid.Col>
+
+          <Grid.Col span={{ base: 12, md: 6 }} mt="md">
+            <Card shadow="sm" padding="lg" radius="md" withBorder h={"100%"}>
+              <Stack spacing="md">
+                <Text  fw={500} size="md" mb={20}>Generate Report</Text>
+                <ReportGenerator builds={builds} metrics={metrics}/>
+              </Stack>
+            </Card>
+          </Grid.Col>
+
           <Grid.Col span={{ base: 12, md: 6 }} mt="md">
             <BuildStatusChart builds={builds} />
           </Grid.Col>
 
-          <Grid.Col span={{ base: 12, md: 12 }} mt="md">
-            <QualityMetricsRadarChart metrics={metrics} />
+          <Grid.Col span={{ base: 12, md: 6 }} mt="md">
+            <QualityMetricsBarChart metrics={metrics} />
           </Grid.Col>
 
         </Grid>

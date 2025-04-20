@@ -31,7 +31,7 @@ const BuildStatusChart = ({ builds }) => {
   if (!builds) {
     return (
       <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <Center style={{ height: 200 }}> {/* Give card a height during loading */}
+        <Center style={{ height: 300 }}> {/* Give card a height during loading */}
           <Loader size="sm" />
           <Text ml="xs" size="sm" c="dimmed">Loading build data...</Text>
         </Center>
@@ -59,8 +59,8 @@ const BuildStatusChart = ({ builds }) => {
          <Center>
              <DonutChart
                 data={chartData}
-                size={160} // Adjust size as needed
-                thickness={20} // Adjust thickness as needed
+                size={280} // Adjust size as needed
+                thickness={50} // Adjust thickness as needed
                 withTooltip
                 tooltipDataSource="segment" // Show tooltip based on the segment hovered
              />
