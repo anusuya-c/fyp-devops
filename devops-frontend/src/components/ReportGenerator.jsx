@@ -8,7 +8,7 @@ import { notifications } from '@mantine/notifications';
 import { api } from '../api/api'; // Adjust path
 import DevOpsReportDocument from './pdf/DevOpsReportDocument'; // Adjust path
 
-function ReportGenerator() {
+function ReportGenerator({barChartImg, donutChartImg}) {
     const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
     const [reportData, setReportData] = useState(null);
     const [error, setError] = useState(null);
@@ -94,6 +94,8 @@ function ReportGenerator() {
                 argoData: fetchedArgoData,
                 jenkinsData: fetchedJenkinsData,
                 sonarqubeData: fetchedSonarqubeData,
+                barChartImg,
+                donutChartImg,
             };
 
             // Update notification based on errors
@@ -180,6 +182,8 @@ function ReportGenerator() {
                                 argoData={reportData.argoData} // Pass null if fetch failed
                                 jenkinsData={reportData.jenkinsData} // Pass null if fetch failed
                                 sonarqubeData={reportData.sonarqubeData} // Pass null if fetch failed
+                                barChartImg={reportData.barChartImg}
+                                donutChartImg={reportData.donutChartImg}
                             />
                         }
                         fileName={`devops_report_${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19).replace('T', '_')}.pdf`}

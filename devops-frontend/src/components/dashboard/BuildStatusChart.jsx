@@ -42,7 +42,7 @@ const BuildStatusChart = ({ builds }) => {
   if (totalBuildsCounted === 0) {
      return (
       <Card shadow="sm" padding="lg" radius="md" withBorder>
-         <Stack align="center" justify="center" style={{ height: 200 }}>
+         <Stack align="center" justify="center" style={{ height: 300 }}>
             <IconChartDonut3 size={40} stroke={1.5} color={theme.colors.gray[5]}/>
             <Text size="sm" c="dimmed">No build status data available.</Text>
          </Stack>
@@ -59,7 +59,7 @@ const BuildStatusChart = ({ builds }) => {
          <Center>
              <DonutChart
                 data={chartData}
-                size={280} // Adjust size as needed
+                size={300} // Adjust size as needed
                 thickness={50} // Adjust thickness as needed
                 withTooltip
                 tooltipDataSource="segment" // Show tooltip based on the segment hovered
@@ -69,7 +69,7 @@ const BuildStatusChart = ({ builds }) => {
             {chartData.map((item) => (
                  <Center key={item.name}>
                     <div style={{ width: 10, height: 10, backgroundColor: item.color, borderRadius: '50%', marginRight: 8 }}></div>
-                    <Text size="xs" c="dimmed">{item.name}: {item.value}</Text>
+                    <Text size="md">{item.name}: {item.value}</Text>
                  </Center>
             ))}
          </Stack>

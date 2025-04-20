@@ -1,6 +1,7 @@
 // src/components/pdf/DevOpsReportDocument.jsx
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
+// Import Image component
+import { Page, Text, View, Document, StyleSheet, Font, Image } from '@react-pdf/renderer';
 
 // Import your formatting functions - ensure they don't rely on browser/DOM APIs
 import {
@@ -20,6 +21,20 @@ const styles = StyleSheet.create({
         fontSize: 9, // Smaller base font size for PDF
         fontFamily: 'Helvetica', // Default fallback font
     },
+    // Specific style for chart pages if needed (e.g., centering content)
+    chartPage: {
+        flexDirection: 'column',
+        backgroundColor: '#FFFFFF',
+        padding: 30,
+        alignItems: 'center', // Center content vertically
+        justifyContent: 'center', // Center content horizontally
+    },
+    chartImage: {
+        maxWidth: '90%', // Prevent image from overflowing page width
+        maxHeight: '90%', // Prevent image from overflowing page height
+        objectFit: 'contain', // Scale image while preserving aspect ratio
+        marginVertical: 20, // Add some space around the image
+    },
     section: {
         marginBottom: 15,
         paddingBottom: 10,
@@ -31,6 +46,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         fontFamily: 'Helvetica-Bold',
         color: '#111111',
+        textAlign: 'center', // Center main report header
     },
     subHeader: {
         fontSize: 12,
@@ -115,6 +131,16 @@ const styles = StyleSheet.create({
      statusFail: { color: '#dc3545' }, // Red
      statusUnknown: { color: '#6c757d' }, // Gray
      statusProgress: { color: '#0d6efd' }, // Blue
+    // --- Footer Style ---
+     footer: {
+        position: 'absolute',
+        bottom: 15,
+        left: 30,
+        right: 30,
+        textAlign: 'center',
+        color: 'grey',
+        fontSize: 8,
+    },
 });
 
 // --- PDF Status Style Helper (Simplified for common statuses) ---
@@ -128,22 +154,58 @@ const getPdfStatusStyle = (status, building = false) => {
     return styles.statusUnknown;
 };
 
+// --- Footer Component ---
+// Extracted for reusability on each page if needed, but fixed rendering is better
+const PageFooter = () => (
+    <Text style={styles.footer} fixed render={({ pageNumber, totalPages }) => (
+        `Page ${pageNumber} / ${totalPages}`
+    )} />
+);
+
+
 // --- The PDF Document Component ---
-// Use props: { argoData, jenkinsData, sonarqubeData }
-const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData }) => (
+// Use props: { argoData, jenkinsData, sonarqubeData, barChartImg, donutChartImg }
+const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData, barChartImg, donutChartImg }) => (
     <Document title="DevOps Report">
+
+        {/* --- Page 1: Bar Chart --- */}
+        {barChartImg && ( // Only render page if image data exists
+            <Page size="A4" style={styles.chartPage} orientation="landscape">
+                <Text style={styles.subHeader}>Build Status Overview</Text>
+                <Image
+                    style={styles.chartImage}
+                    src={barChartImg} // Assumes this is a base64 data URI or a URL accessible by the PDF renderer
+                />
+                <PageFooter />
+            </Page>
+        )}
+
+        {/* --- Page 2: Donut Chart --- */}
+        {donutChartImg && ( // Only render page if image data exists
+            <Page size="A4" style={styles.chartPage} orientation="landscape">
+                 <Text style={styles.subHeader}>Application Health Overview</Text>
+                 <Image
+                    style={styles.chartImage}
+                    src={donutChartImg} // Assumes this is a base64 data URI or a URL accessible by the PDF renderer
+                />
+                 <PageFooter />
+            </Page>
+        )}
+
+        {/* --- Page 3 onwards: Report Details --- */}
         <Page size="A4" style={styles.page} orientation="landscape"> {/* Landscape might fit tables better */}
 
             {/* --- Report Header --- */}
             <View style={styles.section}>
                 <Text style={styles.header}>DevOps Dashboard Report</Text>
-                <Text style={styles.text}>
+                <Text style={[styles.text, { textAlign: 'center' }]}> {/* Center generation timestamp */}
                     Generated: {formatTimestamp ? formatTimestamp(Date.now()) : new Date().toLocaleString()}
                 </Text>
             </View>
 
             {/* --- Argo CD Section --- */}
-            <View style={styles.section} wrap={false}>
+            {/* Added break prop to suggest starting this section on a new page if it follows charts */}
+            <View style={styles.section} wrap={false} >
                 <Text style={styles.subHeader}>Argo CD Applications</Text>
                 {(argoData?.items && argoData.items.length > 0) ? (
                     <View style={styles.table}>
@@ -260,15 +322,13 @@ const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData }) => (
                                         <Text style={[styles.tableCol, styles.sqValueCol, styles.lastCol, valueStyle]}>{displayValue}</Text>
                                     </View>
                                 );
-                        })}
+                            })}
                     </View>
                 ) : (<Text style={styles.text}>No SonarQube metrics data available for '{sonarqubeData?.projectKey || 'website'}'.</Text>)}
             </View>
 
-             {/* --- Footer (Optional) --- */}
-            <Text style={{ position: 'absolute', bottom: 15, left: 30, right: 30, textAlign: 'center', color: 'grey', fontSize: 8 }} fixed render={({ pageNumber, totalPages }) => (
-               `Page ${pageNumber} / ${totalPages}`
-             )} />
+             {/* --- Footer on the main report page --- */}
+             <PageFooter />
 
         </Page>
     </Document>

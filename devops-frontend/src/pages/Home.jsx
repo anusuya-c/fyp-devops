@@ -6,11 +6,41 @@ import BuildStatusChart from "../components/dashboard/BuildStatusChart";
 import { Card, Grid, Stack, Text } from "@mantine/core";
 import ReportGenerator from "../components/ReportGenerator";
 import QualityMetricsBarChart from "../components/dashboard/QualityMetricsBarChart";
+import html2canvas from 'html2canvas';
 
 export default function HomePage() {
 
   const [builds, setBuilds] = useState([]);
   const [metrics, setMetrics] = useState(null);
+  const [donutChartImg, setDonutChartImg] = useState(null);
+  const [barChartImg, setBarChartImg] = useState(null);
+
+  useEffect(() => {
+    const captureCharts = async () => {
+      const donutChartElement = document.getElementById('build-status-chart');
+      const barChartElement = document.getElementById('quality-metrics-chart');
+
+      if (donutChartElement) {
+        try {
+          const canvas = await html2canvas(donutChartElement);
+          setDonutChartImg(canvas.toDataURL());
+        } catch (error) {
+          console.error("Error capturing build status chart:", error);
+        }
+      }
+
+      if (barChartElement) {
+        try {
+          const canvas = await html2canvas(barChartElement);
+          setBarChartImg(canvas.toDataURL());
+        } catch (error) {
+          console.error("Error capturing quality metrics chart:", error);
+        }
+      }
+    };
+
+    captureCharts();
+  }, [builds, metrics]);
 
   useEffect(() => {
     const loadJobDetails = async () => {
@@ -76,24 +106,30 @@ export default function HomePage() {
         </div>
         <Grid>
           <Grid.Col span={{ base: 12, md: 6 }} mt="md">
+
             <AverageBuildDuration builds={builds} />
+
           </Grid.Col>
 
           <Grid.Col span={{ base: 12, md: 6 }} mt="md">
             <Card shadow="sm" padding="lg" radius="md" withBorder h={"100%"}>
               <Stack spacing="md">
-                <Text  fw={500} size="md" mb={20}>Generate Report</Text>
-                <ReportGenerator builds={builds} metrics={metrics}/>
+                <Text fw={500} size="md" mb={20}>Generate Report</Text>
+                <ReportGenerator donutChartImg={donutChartImg} barChartImg={barChartImg} />
               </Stack>
             </Card>
           </Grid.Col>
 
           <Grid.Col span={{ base: 12, md: 6 }} mt="md">
-            <BuildStatusChart builds={builds} />
+            <div id="build-status-chart">
+              <BuildStatusChart builds={builds} />
+            </div>
           </Grid.Col>
 
           <Grid.Col span={{ base: 12, md: 6 }} mt="md">
-            <QualityMetricsBarChart metrics={metrics} />
+            <div id="quality-metrics-chart">
+              <QualityMetricsBarChart metrics={metrics} />
+            </div>
           </Grid.Col>
 
         </Grid>

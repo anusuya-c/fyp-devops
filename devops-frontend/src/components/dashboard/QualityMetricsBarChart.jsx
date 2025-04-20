@@ -7,37 +7,42 @@ const QualityMetricsBarChart = ({ metrics }) => {
   const theme = useMantineTheme();
   const [chartData, setChartData] = useState([]);
   const [processingError, setProcessingError] = useState(false);
-  const [columns, setColumns] = useState([]);
+  const chartSeries = [{ name: 'value', color: theme.colors.blue[6] }];
 
   useEffect(() => {
     if (metrics) {
       setProcessingError(false);
       try {
         const metricsToShow = [
-          { key: 'coverage', label: 'Coverage' },
+          { key: 'coverage', label: 'Coverage (%)' },
           { key: 'bugs', label: 'Bugs' },
           { key: 'duplicated_lines_density', label: 'Dupl. Density (%)' },
-          { key: 'code_smells', label: 'Code Smells' },
-          { key: 'vulnerabilities', label: 'Vulnerabilities' },
+          { key: 'code_smells', label: 'Code Smells' }, // Label that might be skipped
+          { key: 'vulnerabilities', label: 'Vulnerabilities' }, // Label that might be skipped
           { key: 'security_hotspots', label: 'Sec. Hotspots' },
         ];
 
-        const row = { name: 'Metrics' };
-        const columnDefs = [];
+        const processedData = [];
 
         for (const metric of metricsToShow) {
           const rawValue = metrics[metric.key];
           const parsedValue = parseFloat(rawValue);
+
           if (!isNaN(parsedValue)) {
-            row[metric.label] = parsedValue;
-            columnDefs.push({ name: metric.label, color: theme.colors.blue[6] });
+            processedData.push({
+              metric: metric.label,
+              value: parsedValue,
+            });
           } else {
-            console.warn(`Non-numeric metric skipped: ${metric.label}`);
+            // Log skipped metrics but don't add them to chart data if non-numeric
+            console.warn(`Non-numeric metric skipped (won't be plotted): ${metric.label}`);
+            // If you *wanted* to show a gap/zero, you could push:
+            // processedData.push({ metric: metric.label, value: 0 });
+            // But current behavior (skipping) is usually preferred.
           }
         }
 
-        setChartData([row]);  // Single row object
-        setColumns(columnDefs);
+        setChartData(processedData);
 
       } catch (error) {
         console.error("Error processing chart data:", error);
@@ -76,7 +81,7 @@ const QualityMetricsBarChart = ({ metrics }) => {
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Stack>
         <Text size="sm" fw={500} ta="center">
-          Code Quality Overview 
+          Code Quality Overview
         </Text>
 
         {metrics?.alert_status && metrics.alert_status !== 'OK' && (
@@ -91,22 +96,39 @@ const QualityMetricsBarChart = ({ metrics }) => {
           </Alert>
         )}
 
-        {chartData.length > 0 && columns.length > 0 ? (
-          <Box style={{ width: '100%', height: 300 }}>
+        {chartData.length > 0 ? (
+          // Increased height slightly more to accommodate angled labels
+          <Box style={{ width: '100%', height: 380 }}>
             <BarChart
               data={chartData}
-              dataKey="name"
-              series={columns}
+              dataKey="metric"
+              series={chartSeries}
+              tickLine="none" // Clean look: remove tick lines
+              gridAxis="y"
               withXAxis
               withYAxis
+              xAxisProps={{
+                // --- Settings for labels ---
+                tick: { fill: theme.black, fontSize: 12 }, // Smaller font size (adjust 10 as needed)
+                interval: 0,         // Force display of all labels
+                // angle: -45,          // Angle labels to prevent overlap
+                // textAnchor: 'end',   // Anchor angled text to the end point for better alignment
+                // dy: 5,            // Optional: Adjust vertical position if needed after angling
+                // dx: -5           // Optional: Adjust horizontal position if needed after angling
+              }}
+              yAxisProps={{
+                 tick: { fill: theme.black, fontSize: 10 }, // Smaller font size for Y-axis too
+                 // domain: [0, 'auto'] // Ensure Y axis starts at 0 if needed
+              }}
               style={{ width: '100%', height: '100%' }}
+              // Optional: Adjust margins if angled labels get cut off
+              // margin={{ bottom: 30 }}
             />
           </Box>
         ) : (
           <Center style={{ height: 300 }}>
             <IconChartBar size={30} color={theme.colors.gray[5]} />
             <Text ml="xs" size="sm" c="dimmed">No valid numeric metrics data to display in chart.</Text>
-            {processingError && <Text ml="xs" size="xs" c="dimmed">(Some metrics might have non-numeric values)</Text>}
           </Center>
         )}
       </Stack>
