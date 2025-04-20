@@ -182,7 +182,7 @@ function ReportGenerator() {
                                 sonarqubeData={reportData.sonarqubeData} // Pass null if fetch failed
                             />
                         }
-                        fileName={`devops_report_${new Date().toISOString().split('T')[0]}.pdf`}
+                        fileName={`devops_report_${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19).replace('T', '_')}.pdf`}
                     >
                         {({ blob, url, loading, error: pdfError }) => (
                             <Button

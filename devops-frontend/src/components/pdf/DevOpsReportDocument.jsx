@@ -1,262 +1,149 @@
 // src/components/pdf/DevOpsReportDocument.jsx
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Font, Image } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
 
-// Import your formatting functions (ensure they are compatible)
+// Import your formatting functions - ensure they don't rely on browser/DOM APIs
 import {
-    formatDuration, formatTimestamp, getResultColor, getResultText,
+    formatDuration, formatTimestamp, getResultColor, getResultText, // Assuming getResultColor is adapted or not used for PDF color directly
     formatSqDebt, formatSqPercentage, getSqRatingProps, getSqQualityGateProps, getSqMetricLabel
-} from '../../utils/formatting'; // Adjust path
+} from '../../utils/formatting'; // Adjust path as needed
 
-// --- Font Registration (Update paths as needed) ---
-// Make sure these TTF files exist in your /public folder or accessible path
-try {
-    Font.register({
-        family: 'Lato',
-        fonts: [
-            { src: '/fonts/Lato-Regular.ttf' }, // path relative to public folder
-            { src: '/fonts/Lato-Bold.ttf', fontWeight: 'bold' },
-            // { src: '/fonts/Lato-Italic.ttf', fontStyle: 'italic' },
-        ]
-    });
-    Font.register({
-        family: 'Roboto Mono', // Example monospace font
-        fonts: [
-            { src: '/fonts/RobotoMono-Regular.ttf' },
-        ]
-    });
-} catch (e) {
-    console.warn("Could not register custom fonts for PDF. Using default.", e);
-    // Fallback fonts (Helvetica, Courier) will be used if registration fails
-}
-// --- ---
-
-// --- Color Palette ---
-const colors = {
-    primary: '#0d47a1', // Darker Blue
-    secondary: '#1565c0', // Medium Blue
-    accent: '#42a5f5', // Lighter Blue
-    textPrimary: '#212121', // Dark Gray
-    textSecondary: '#616161', // Medium Gray
-    border: '#e0e0e0', // Light Gray Border
-    backgroundLight: '#f5f5f5', // Very Light Gray Background
-    statusOk: '#2e7d32',    // Darker Green
-    statusWarn: '#ed6c02',   // Darker Orange
-    statusFail: '#c62828',   // Darker Red
-    statusUnknown: '#757575', // Darker Gray
-    statusProgress: '#0288d1', // Darker Info Blue
-};
+// --- Register Fonts (Optional but Recommended) ---
+// Font.register({ family: 'YourFontFamily', src: '/path/to/font.ttf' });
 
 // --- Styles ---
 const styles = StyleSheet.create({
     page: {
         flexDirection: 'column',
         backgroundColor: '#FFFFFF',
-        padding: 35, // Increased padding
-        fontSize: 9, // Base font size
-        fontFamily: 'Lato', // Use registered font
-        color: colors.textPrimary,
-        lineHeight: 1.4,
+        padding: 30,
+        fontSize: 9, // Smaller base font size for PDF
+        fontFamily: 'Helvetica', // Default fallback font
     },
     section: {
-        marginBottom: 20, // Increased spacing
+        marginBottom: 15,
         paddingBottom: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#EEEEEE',
     },
-     sectionWithBorder: {
-         borderBottomWidth: 1,
-         borderBottomColor: colors.border,
-     },
-    headerContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 20,
-        paddingBottom: 10,
-        borderBottomWidth: 2,
-        borderBottomColor: colors.primary,
-    },
-    logo: {
-        width: 80, // Adjust as needed
-        height: 40, // Adjust as needed
-        opacity: 0.8,
-    },
-    reportTitle: {
-        fontSize: 20,
-        fontFamily: 'Lato', // Use regular weight for title, bold below
-        fontWeight: 'bold', // Explicitly set bold
-        color: colors.primary,
-        textAlign: 'right',
-    },
-    generatedDate: {
-        fontSize: 9,
-        color: colors.textSecondary,
-        textAlign: 'right',
+    header: {
+        fontSize: 16,
+        marginBottom: 12,
+        fontFamily: 'Helvetica-Bold',
+        color: '#111111',
     },
     subHeader: {
-        fontSize: 13,
-        fontFamily: 'Lato',
-        fontWeight: 'bold',
-        marginBottom: 10,
-        color: colors.secondary,
-        paddingBottom: 3,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.accent,
+        fontSize: 12,
+        marginBottom: 8,
+        fontFamily: 'Helvetica-Bold',
+        color: '#333333',
     },
     text: {
         marginBottom: 4,
+        lineHeight: 1.3,
     },
     boldText: {
-        fontFamily: 'Lato',
-        fontWeight: 'bold', // Ensure bold font is used
+        fontFamily: 'Helvetica-Bold',
     },
     table: {
         display: 'flex',
         flexDirection: 'column',
-        width: '100%', // Use full width
+        width: 'auto',
         borderStyle: 'solid',
-        borderWidth: 0.5,
-        borderColor: colors.border,
+        borderWidth: 0.5, // Thinner border for PDF
+        borderColor: '#cccccc',
         marginBottom: 10,
     },
     tableRow: {
         flexDirection: 'row',
-        alignItems: 'stretch',
-        minHeight: 20,
-    },
-    tableRowZebra: {
-        backgroundColor: colors.backgroundLight,
+        borderBottomColor: '#cccccc',
+        borderBottomWidth: 0.5,
+        alignItems: 'stretch', // Stretch items to fill height
+        minHeight: 18,
     },
     tableHeaderRow: {
-        backgroundColor: colors.secondary, // Use secondary color
-        color: '#FFFFFF', // White text
-        fontFamily: 'Lato',
-        fontWeight: 'bold',
-        minHeight: 22,
+        backgroundColor: '#f0f0f0',
+        fontFamily: 'Helvetica-Bold',
+        minHeight: 20,
     },
     tableColHeader: {
-        borderRightColor: colors.border,
+        borderRightColor: '#cccccc',
         borderRightWidth: 0.5,
-        padding: 5, // Slightly more padding
+        padding: 4,
         flexGrow: 1,
         flexBasis: 0,
         textAlign: 'center',
-        fontFamily: 'Lato', // Ensure header uses the font
-        fontWeight: 'bold',
-        color: '#FFFFFF', // Ensure header text is white
-         alignItems: 'center',
+        fontFamily: 'Helvetica-Bold',
+         alignItems: 'center', // Vertically center header text
          justifyContent: 'center',
     },
     tableCol: {
-        borderRightColor: colors.border,
+        borderRightColor: '#cccccc',
         borderRightWidth: 0.5,
-        padding: 5,
+        padding: 4,
         flexGrow: 1,
         flexBasis: 0,
-        justifyContent: 'center', // Better vertical align
-        overflow: 'hidden', // Prevent text overflow issues (experimental)
+         justifyContent: 'center', // Vertically center content
     },
-    // --- Column Flex Weights (Adjust as needed) ---
-    // Jenkins
+    // Jenkins Column Flex Weights
     jenkinsBuildCol: { flex: 1 },
     jenkinsResultCol: { flex: 1.5, textAlign: 'center' },
     jenkinsStartCol: { flex: 2.5 },
     jenkinsDurationCol: { flex: 1.5 },
     jenkinsEndCol: { flex: 2.5 },
-    // Argo
+    // Argo Column Flex Weights
     argoAppCol: { flex: 2.5 },
     argoStatusCol: { flex: 1, textAlign: 'center' },
     argoSourceCol: { flex: 3.5 },
     argoDestCol: { flex: 2.5 },
-    // SQ
+    // SQ Column Flex Weights
     sqMetricCol: { flex: 3 },
     sqValueCol: { flex: 2 },
-    // --- ---
+    // Last column styling
     lastCol: {
         borderRightWidth: 0,
     },
     code: {
-        fontFamily: 'Roboto Mono', // Use registered monospace font
-        backgroundColor: '#e0e0e0', // Slightly darker background
-        paddingHorizontal: 3,
-        paddingVertical: 1,
+        fontFamily: 'Courier', // Use a monospace font if available/registered
+        backgroundColor: '#f5f5f5',
+        paddingHorizontal: 2,
         fontSize: 8,
-        borderRadius: 2,
-        color: colors.textPrimary,
     },
-    // --- Status Colors ---
-    statusTextBase: {
-        fontFamily: 'Lato', // Ensure status uses the font
-        fontWeight: 'bold', // Make status text bold
-        textTransform: 'uppercase', // Uppercase for status
-        fontSize: 8, // Slightly smaller status text
-    },
-    statusOk: { color: colors.statusOk },
-    statusWarn: { color: colors.statusWarn },
-    statusFail: { color: colors.statusFail },
-    statusUnknown: { color: colors.statusUnknown },
-    statusProgress: { color: colors.statusProgress },
-    // --- Footer ---
-    pageNumber: {
-        position: 'absolute',
-        fontSize: 8,
-        bottom: 15,
-        left: 0,
-        right: 40, // Adjust to align right
-        textAlign: 'right',
-        color: colors.textSecondary,
-        fontFamily: 'Lato',
-    },
+    // --- Status Colors for PDF ---
+     statusOk: { color: '#28a745' }, // Green
+     statusWarn: { color: '#fd7e14' }, // Orange
+     statusFail: { color: '#dc3545' }, // Red
+     statusUnknown: { color: '#6c757d' }, // Gray
+     statusProgress: { color: '#0d6efd' }, // Blue
 });
 
-// --- PDF Status Style Helper ---
+// --- PDF Status Style Helper (Simplified for common statuses) ---
 const getPdfStatusStyle = (status, building = false) => {
     if (building) return styles.statusProgress;
     const lower = status?.toLowerCase() || 'unknown';
+    // Combine common OK/WARN/FAIL states
     if (['synced', 'healthy', 'succeeded', 'ok', 'passed', 'stable', 'a'].includes(lower)) return styles.statusOk;
     if (['progressing', 'degraded', 'unstable', 'outofsync', 'b', 'c', 'warn'].includes(lower)) return styles.statusWarn;
     if (['failed', 'error', 'aborted', 'd', 'e'].includes(lower)) return styles.statusFail;
     return styles.statusUnknown;
 };
 
-// --- Helper to safely format timestamps ---
-const safeFormatTimestamp = (timestamp) => {
-    if (!timestamp) return '-';
-    try {
-        // Use a simpler, reliable format if Intl fails or isn't needed
-        return formatTimestamp ? formatTimestamp(timestamp) : new Date(timestamp).toLocaleString('en-US');
-    } catch {
-        return String(timestamp); // Fallback
-    }
-};
-const safeFormatDuration = (duration) => {
-    if (duration === null || duration === undefined) return '-';
-     try {
-        return formatDuration ? formatDuration(duration) : `${(duration / 1000).toFixed(1)}s`;
-    } catch {
-        return String(duration);
-    }
-};
-
-
 // --- The PDF Document Component ---
+// Use props: { argoData, jenkinsData, sonarqubeData }
 const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData }) => (
     <Document title="DevOps Report">
-        <Page size="A4" style={styles.page} orientation="landscape">
+        <Page size="A4" style={styles.page} orientation="landscape"> {/* Landscape might fit tables better */}
 
-            {/* --- Header --- */}
-             <View style={styles.headerContainer} fixed>
-                {/* Add Logo - Replace with your actual logo path */}
-                {/* <Image src="/images/your_logo.png" style={styles.logo} /> */}
-                <View style={{ textAlign: 'right' }}>
-                    <Text style={styles.reportTitle}>DevOps Dashboard Report</Text>
-                    <Text style={styles.generatedDate}>
-                        Generated: {safeFormatTimestamp(Date.now())}
-                    </Text>
-                 </View>
-             </View>
+            {/* --- Report Header --- */}
+            <View style={styles.section}>
+                <Text style={styles.header}>DevOps Dashboard Report</Text>
+                <Text style={styles.text}>
+                    Generated: {formatTimestamp ? formatTimestamp(Date.now()) : new Date().toLocaleString()}
+                </Text>
+            </View>
 
             {/* --- Argo CD Section --- */}
-            <View style={[styles.section, styles.sectionWithBorder]} wrap={false}>
+            <View style={styles.section} wrap={false}>
                 <Text style={styles.subHeader}>Argo CD Applications</Text>
                 {(argoData?.items && argoData.items.length > 0) ? (
                     <View style={styles.table}>
@@ -267,27 +154,26 @@ const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData }) => (
                             <Text style={[styles.tableColHeader, styles.argoSourceCol]}>Source</Text>
                             <Text style={[styles.tableColHeader, styles.argoDestCol, styles.lastCol]}>Destination</Text>
                         </View>
-                        {argoData.items.map((app, index) => { // Added index for zebra striping
+                        {argoData.items.map(app => {
                             const md = app.metadata || {}; const sp = app.spec || {}; const st = app.status || {};
                             const sync = st.sync || {}; const health = st.health || {};
                             const src = sp.source || {}; const dst = sp.destination || {};
-                            const rowStyle = index % 2 === 1 ? [styles.tableRow, styles.tableRowZebra] : styles.tableRow; // Zebra style
                             return (
-                                <View key={md.uid || md.name} style={rowStyle} wrap={false}>
+                                <View key={md.uid || md.name} style={styles.tableRow} wrap={false}>
                                     <View style={[styles.tableCol, styles.argoAppCol]}>
                                         <Text style={styles.boldText}>{md.name || 'N/A'}</Text>
-                                        <Text style={{ fontSize: 8, color: colors.textSecondary }}>Proj: {sp.project || 'default'}</Text>
+                                        <Text>Proj: {sp.project || 'default'}</Text>
                                     </View>
-                                    <Text style={[styles.tableCol, styles.argoStatusCol, styles.statusTextBase, getPdfStatusStyle(sync.status)]}>{sync.status || '-'}</Text>
-                                    <Text style={[styles.tableCol, styles.argoStatusCol, styles.statusTextBase, getPdfStatusStyle(health.status)]}>{health.status || '-'}</Text>
+                                    <Text style={[styles.tableCol, styles.argoStatusCol, getPdfStatusStyle(sync.status)]}>{sync.status || '-'}</Text>
+                                    <Text style={[styles.tableCol, styles.argoStatusCol, getPdfStatusStyle(health.status)]}>{health.status || '-'}</Text>
                                     <View style={[styles.tableCol, styles.argoSourceCol]}>
-                                        <Text style={{ fontSize: 8 }}>Repo: {src.repoURL?.split('/').slice(-2).join('/') || '-'}</Text>
-                                        <Text style={{ fontSize: 8 }}>Target: {src.targetRevision || 'HEAD'} (<Text style={styles.code}>{sync.revision?.substring(0, 7) || '-'}</Text>)</Text>
-                                        <Text style={{ fontSize: 8 }}>Path: {src.path || '.'}</Text>
+                                        <Text>Repo: {src.repoURL?.split('/').slice(-2).join('/') || '-'}</Text> {/* Shorten URL */}
+                                        <Text>Target: {src.targetRevision || 'HEAD'} (<Text style={styles.code}>{sync.revision?.substring(0, 7) || '-'}</Text>)</Text>
+                                        <Text>Path: {src.path || '.'}</Text>
                                     </View>
                                     <View style={[styles.tableCol, styles.argoDestCol, styles.lastCol]}>
-                                        <Text style={{ fontSize: 8 }}>Srv: {dst.server?.replace(/https?:\/\//, '') || '-'}</Text>
-                                        <Text style={{ fontSize: 8 }}>NS: {dst.namespace || '-'}</Text>
+                                        <Text>Srv: {dst.server?.replace(/https?:\/\//, '') || '-'}</Text>
+                                        <Text>NS: {dst.namespace || '-'}</Text>
                                     </View>
                                 </View>
                             );
@@ -297,7 +183,7 @@ const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData }) => (
             </View>
 
             {/* --- Jenkins Section --- */}
-            <View style={[styles.section, styles.sectionWithBorder]} wrap={false}>
+            <View style={styles.section} wrap={false}>
                 <Text style={styles.subHeader}>Jenkins Build History: {jenkinsData?.jobName || 'pipeline'}</Text>
                 {(jenkinsData?.builds && jenkinsData.builds.length > 0) ? (
                     <View style={styles.table}>
@@ -308,17 +194,16 @@ const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData }) => (
                             <Text style={[styles.tableColHeader, styles.jenkinsDurationCol]}>Duration</Text>
                             <Text style={[styles.tableColHeader, styles.jenkinsEndCol, styles.lastCol]}>Finished</Text>
                         </View>
-                        {jenkinsData.builds.slice(0, 10).map((build, index) => { // Latest 10 builds
+                        {jenkinsData.builds.slice(0, 10).map(build => { // Display latest 10
                             const resultText = getResultText(build.result, build.building);
                             const resultStyle = getPdfStatusStyle(build.result, build.building);
-                            const rowStyle = index % 2 === 1 ? [styles.tableRow, styles.tableRowZebra] : styles.tableRow;
                             return (
-                                <View key={build.number} style={rowStyle} wrap={false}>
-                                    <Text style={[styles.tableCol, styles.jenkinsBuildCol]}><Text style={styles.boldText}>#{build.number}</Text></Text>
-                                    <Text style={[styles.tableCol, styles.jenkinsResultCol, styles.statusTextBase, resultStyle]}>{resultText}</Text>
-                                    <Text style={[styles.tableCol, styles.jenkinsStartCol]}>{safeFormatTimestamp(build.start_time_ms)}</Text>
-                                    <Text style={[styles.tableCol, styles.jenkinsDurationCol]}>{safeFormatDuration(build.duration_ms)}</Text>
-                                    <Text style={[styles.tableCol, styles.jenkinsEndCol, styles.lastCol]}>{safeFormatTimestamp(build.end_time_ms)}</Text>
+                                <View key={build.number} style={styles.tableRow} wrap={false}>
+                                    <Text style={[styles.tableCol, styles.jenkinsBuildCol]}>#{build.number}</Text>
+                                    <Text style={[styles.tableCol, styles.jenkinsResultCol, resultStyle]}>{resultText}</Text>
+                                    <Text style={[styles.tableCol, styles.jenkinsStartCol]}>{formatTimestamp(build.start_time_ms)}</Text>
+                                    <Text style={[styles.tableCol, styles.jenkinsDurationCol]}>{formatDuration(build.duration_ms)}</Text>
+                                    <Text style={[styles.tableCol, styles.jenkinsEndCol, styles.lastCol]}>{formatTimestamp(build.end_time_ms)}</Text>
                                 </View>
                             );
                         })}
@@ -327,7 +212,7 @@ const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData }) => (
             </View>
 
             {/* --- SonarQube Section --- */}
-            <View style={styles.section} wrap={false}> {/* Removed border from last section */}
+            <View style={styles.section} wrap={false}>
                 <Text style={styles.subHeader}>SonarQube Metrics: {sonarqubeData?.projectKey || 'website'}</Text>
                 {(sonarqubeData?.metrics && Object.keys(sonarqubeData.metrics).length > 0) ? (
                     <View style={styles.table}>
@@ -336,37 +221,43 @@ const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData }) => (
                             <Text style={[styles.tableColHeader, styles.sqValueCol, styles.lastCol]}>Value</Text>
                         </View>
                         {Object.entries(sonarqubeData.metrics)
-                            .filter(([key, value]) => value !== null && value !== undefined && getSqMetricLabel(key))
-                            .sort(([keyA], [keyB]) => {
+                            .filter(([key, value]) => value !== null && value !== undefined && getSqMetricLabel(key)) // Only show metrics with labels
+                            .sort(([keyA], [keyB]) => { // Sort for consistent order
                                 const order = ['alert_status', 'bugs', 'vulnerabilities', 'security_hotspots', 'code_smells', 'coverage', 'duplicated_lines_density', 'ncloc', 'sqale_index', 'reliability_rating', 'security_rating', 'sqale_rating'];
                                 return (order.indexOf(keyA) === -1 ? 99 : order.indexOf(keyA)) - (order.indexOf(keyB) === -1 ? 99 : order.indexOf(keyB));
                             })
-                            .map(([key, value], index) => { // Added index
+                            .map(([key, value]) => {
                                 const label = getSqMetricLabel(key);
                                 let displayValue = value ?? '-';
                                 let valueStyle = {};
-                                const rowStyle = index % 2 === 1 ? [styles.tableRow, styles.tableRowZebra] : styles.tableRow;
 
-                                try {
+                                // Apply specific formatting/styling
+                                try { // Wrap formatting in try/catch
                                     switch (key) {
                                         case 'ncloc': displayValue = value ? parseInt(value, 10).toLocaleString() : '-'; break;
                                         case 'coverage': case 'duplicated_lines_density': displayValue = formatSqPercentage(value); break;
                                         case 'sqale_index': displayValue = formatSqDebt(value); break;
-                                        case 'alert_status': case 'sqale_rating': case 'security_rating': case 'reliability_rating': {
+                                        case 'alert_status':
+                                        case 'sqale_rating': case 'security_rating': case 'reliability_rating': {
                                             const props = key === 'alert_status' ? getSqQualityGateProps(value) : getSqRatingProps(value);
                                             displayValue = props.label;
-                                            valueStyle = getPdfStatusStyle(props.label); break;
+                                            valueStyle = getPdfStatusStyle(props.label); // Use label/rating for style
+                                            break;
                                         }
-                                        case 'bugs': case 'vulnerabilities': valueStyle = parseInt(value, 10) > 0 ? styles.statusFail : styles.statusOk; break;
-                                        case 'security_hotspots': valueStyle = parseInt(value, 10) > 0 ? styles.statusWarn : styles.statusOk; break;
-                                        default: valueStyle = {}; // Default style if no specific status applies
+                                        case 'bugs': case 'vulnerabilities':
+                                            valueStyle = parseInt(value, 10) > 0 ? styles.statusFail : styles.statusOk; break;
+                                        case 'security_hotspots':
+                                            valueStyle = parseInt(value, 10) > 0 ? styles.statusWarn : styles.statusOk; break;
                                     }
-                                } catch (formatError) { displayValue = value ?? '-'; valueStyle={}; } // Fallback
+                                } catch (formatError) {
+                                    console.error("PDF Formatting Error:", formatError);
+                                    displayValue = value ?? '-'; // Fallback to raw value
+                                }
 
                                 return (
-                                    <View key={key} style={rowStyle} wrap={false}>
+                                    <View key={key} style={styles.tableRow} wrap={false}>
                                         <Text style={[styles.tableCol, styles.sqMetricCol]}>{label}</Text>
-                                        <Text style={[styles.tableCol, styles.sqValueCol, styles.lastCol, styles.boldText, valueStyle]}>{displayValue}</Text>
+                                        <Text style={[styles.tableCol, styles.sqValueCol, styles.lastCol, valueStyle]}>{displayValue}</Text>
                                     </View>
                                 );
                         })}
@@ -374,8 +265,8 @@ const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData }) => (
                 ) : (<Text style={styles.text}>No SonarQube metrics data available for '{sonarqubeData?.projectKey || 'website'}'.</Text>)}
             </View>
 
-            {/* --- Footer --- */}
-            <Text style={styles.pageNumber} fixed render={({ pageNumber, totalPages }) => (
+             {/* --- Footer (Optional) --- */}
+            <Text style={{ position: 'absolute', bottom: 15, left: 30, right: 30, textAlign: 'center', color: 'grey', fontSize: 8 }} fixed render={({ pageNumber, totalPages }) => (
                `Page ${pageNumber} / ${totalPages}`
              )} />
 
