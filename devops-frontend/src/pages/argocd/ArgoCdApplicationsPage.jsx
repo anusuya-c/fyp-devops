@@ -77,9 +77,9 @@ export default function ArgoCdApplicationsPage() {
             <AppSidebar /> {/* Your existing sidebar */}
 
             {/* Main Content Area */}
-            <main style={{ flexGrow: 1, padding: 'var(--mantine-spacing-md)', overflowY: 'auto' }}>
+            <main style={{ flexGrow: 1, padding: 'var(--mantine-spacing-md)', overflowY: 'auto', marginLeft: '230px' }}>
                 <Container size="xl"> {/* Adjust size as needed */}
-                    <Breadcrumbs mb="lg">{breadcrumbItems}</Breadcrumbs>
+                    
 
                     <Title order={2} mb="lg">
                         Argo CD Applications
@@ -109,7 +109,7 @@ export default function ArgoCdApplicationsPage() {
                                 </Paper>
                             ) : (
                                 <SimpleGrid
-                                    cols={{ base: 1, sm: 1, md: 2, lg: 3 }} // Responsive columns
+                                    cols={1} // Responsive columns
                                     spacing="lg"
                                     verticalSpacing="lg"
                                     mt="lg"

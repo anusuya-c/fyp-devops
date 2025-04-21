@@ -51,7 +51,7 @@ const BuildStatusChart = ({ builds }) => {
   }
 
   return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder>
+    <Card shadow="sm" padding="lg" radius="md" withBorder h={560}>
       <Stack>
          <Text size="sm" fw={500} ta="center" mb="xs">
            Build Status Overview

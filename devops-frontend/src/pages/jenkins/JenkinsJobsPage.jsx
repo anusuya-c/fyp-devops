@@ -43,7 +43,7 @@ export default function JenkinsJobsPage() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}> {/* Ensure full height */}
       <AppSidebar />
-      <main style={{ flexGrow: 1, padding: 'var(--mantine-spacing-md)', overflowY: 'auto' }}>
+      <main style={{ flexGrow: 1, padding: 'var(--mantine-spacing-md)', overflowY: 'auto', marginLeft: '230px' }}>
         <Container size="lg"> {/* Optional container for content constraints */}
           <Title order={2} mb="lg">Jenkins Jobs</Title>
 

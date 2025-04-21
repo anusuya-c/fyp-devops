@@ -1,10 +1,11 @@
 .navbar {
     height:  100vh;
-    width: 300px;
+    width: 230px;
     padding: var(--mantine-spacing-md);
     display: flex;
     flex-direction: column;
     border-right: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+    position: fixed;
   }
   
   .navbarMain {

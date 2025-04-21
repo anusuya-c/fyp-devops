@@ -90,28 +90,23 @@ export default function HomePage() {
     loadDetails();
   }, []);
 
-  const staticData = [{ metric: 'A', score: 50 }, { metric: 'B', score: 80 }];
-
-  // ... later in the return
-
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <AppSidebar />
-      <main style={{ flexGrow: 1, padding: 'var(--mantine-spacing-md)', overflowY: 'auto' }}>
+      <main style={{ flexGrow: 1, padding: 'var(--mantine-spacing-md)', overflowY: 'auto', marginLeft:'230px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <h1>DevSecOps Security Monitor</h1>
-            <p>-Secure -Automate -Monitor</p>
           </div>
         </div>
         <Grid>
-          <Grid.Col span={{ base: 12, md: 6 }} mt="md">
+          <Grid.Col span={{ base: 12, md: 7 }} mt="md">
 
             <AverageBuildDuration builds={builds} />
 
           </Grid.Col>
 
-          <Grid.Col span={{ base: 12, md: 6 }} mt="md">
+          <Grid.Col span={{ base: 12, md: 5 }} mt="md">
             <Card shadow="sm" padding="lg" radius="md" withBorder h={"100%"}>
               <Stack spacing="md">
                 <Text fw={500} size="md" mb={20}>Generate Report</Text>
@@ -120,15 +115,15 @@ export default function HomePage() {
             </Card>
           </Grid.Col>
 
-          <Grid.Col span={{ base: 12, md: 6 }} mt="md">
-            <div id="build-status-chart">
-              <BuildStatusChart builds={builds} />
+          <Grid.Col span={{ base: 12, md: 7 }} mt="md">
+            <div id="quality-metrics-chart">
+              <QualityMetricsBarChart metrics={metrics} />
             </div>
           </Grid.Col>
 
-          <Grid.Col span={{ base: 12, md: 6 }} mt="md">
-            <div id="quality-metrics-chart">
-              <QualityMetricsBarChart metrics={metrics} />
+          <Grid.Col span={{ base: 12, md: 5 }} mt="md">
+            <div id="build-status-chart">
+              <BuildStatusChart builds={builds} />
             </div>
           </Grid.Col>
 

@@ -1,4 +1,3 @@
-// src/components/pdf/DevOpsReportDocument.jsx
 import React from 'react';
 // Import Image component
 import { Page, Text, View, Document, StyleSheet, Font, Image } from '@react-pdf/renderer';
@@ -10,152 +9,248 @@ import {
 } from '../../utils/formatting'; // Adjust path as needed
 
 // --- Register Fonts (Optional but Recommended) ---
-// Font.register({ family: 'YourFontFamily', src: '/path/to/font.ttf' });
+// Font.register({ family: 'YourFontFamily', src: '/path/to/font.ttf' }); // None added per request
 
 // --- Styles ---
 const styles = StyleSheet.create({
     page: {
         flexDirection: 'column',
         backgroundColor: '#FFFFFF',
-        padding: 30,
-        fontSize: 9, // Smaller base font size for PDF
-        fontFamily: 'Helvetica', // Default fallback font
+        padding: 25, // Slightly reduce padding for more content space
+        fontSize: 9,
+        fontFamily: 'Helvetica',
     },
-    // Specific style for chart pages if needed (e.g., centering content)
+    centeredPage: {
+        flexDirection: 'column',
+        backgroundColor: '#FFFFFF',
+        padding: 30,
+        fontSize: 9,
+        fontFamily: 'Helvetica',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     chartPage: {
         flexDirection: 'column',
         backgroundColor: '#FFFFFF',
         padding: 30,
-        alignItems: 'center', // Center content vertically
-        justifyContent: 'center', // Center content horizontally
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 9,
+        fontFamily: 'Helvetica',
     },
     chartImage: {
-        maxWidth: '90%', // Prevent image from overflowing page width
-        maxHeight: '90%', // Prevent image from overflowing page height
-        objectFit: 'contain', // Scale image while preserving aspect ratio
-        marginVertical: 20, // Add some space around the image
+        maxWidth: '95%',
+        maxHeight: '80%',
+        objectFit: 'contain',
+        marginVertical: 10,
     },
     section: {
         marginBottom: 15,
-        paddingBottom: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#EEEEEE',
+        paddingBottom: 5, // Reduced bottom padding for section breaks
+        // Removed bottom border for cleaner look with cards
+    },
+    mainTitle: {
+        fontSize: 24,
+        marginBottom: 20,
+        fontFamily: 'Helvetica-Bold',
+        color: '#111111',
+        textAlign: 'center',
+    },
+    titleDate: {
+        fontSize: 14,
+        marginBottom: 50,
+        color: '#333333',
+        textAlign: 'center',
     },
     header: {
         fontSize: 16,
         marginBottom: 12,
         fontFamily: 'Helvetica-Bold',
         color: '#111111',
-        textAlign: 'center', // Center main report header
+        textAlign: 'center',
     },
     subHeader: {
-        fontSize: 12,
-        marginBottom: 8,
+        fontSize: 13, // Slightly larger subheaders
+        marginBottom: 10, // Increased space below subheader
         fontFamily: 'Helvetica-Bold',
         color: '#333333',
+        borderBottomWidth: 1.5, // Add underline to subheaders
+        borderBottomColor: '#EEEEEE',
+        paddingBottom: 3,
     },
     text: {
         marginBottom: 4,
         lineHeight: 1.3,
+        fontSize: 9, // Base text size for cards
+    },
+    introParagraph: {
+        marginBottom: 10,
+        lineHeight: 1.4,
+        fontSize: 10,
+    },
+    listItem: {
+        marginLeft: 15,
+        marginBottom: 3,
+        fontSize: 10,
     },
     boldText: {
         fontFamily: 'Helvetica-Bold',
     },
-    table: {
-        display: 'flex',
-        flexDirection: 'column',
-        width: 'auto',
-        borderStyle: 'solid',
-        borderWidth: 0.5, // Thinner border for PDF
-        borderColor: '#cccccc',
-        marginBottom: 10,
-    },
-    tableRow: {
-        flexDirection: 'row',
-        borderBottomColor: '#cccccc',
-        borderBottomWidth: 0.5,
-        alignItems: 'stretch', // Stretch items to fill height
-        minHeight: 18,
-    },
-    tableHeaderRow: {
-        backgroundColor: '#f0f0f0',
-        fontFamily: 'Helvetica-Bold',
-        minHeight: 20,
-    },
-    tableColHeader: {
-        borderRightColor: '#cccccc',
-        borderRightWidth: 0.5,
-        padding: 4,
-        flexGrow: 1,
-        flexBasis: 0,
-        textAlign: 'center',
-        fontFamily: 'Helvetica-Bold',
-         alignItems: 'center', // Vertically center header text
-         justifyContent: 'center',
-    },
-    tableCol: {
-        borderRightColor: '#cccccc',
-        borderRightWidth: 0.5,
-        padding: 4,
-        flexGrow: 1,
-        flexBasis: 0,
-         justifyContent: 'center', // Vertically center content
-    },
-    // Jenkins Column Flex Weights
-    jenkinsBuildCol: { flex: 1 },
-    jenkinsResultCol: { flex: 1.5, textAlign: 'center' },
-    jenkinsStartCol: { flex: 2.5 },
-    jenkinsDurationCol: { flex: 1.5 },
-    jenkinsEndCol: { flex: 2.5 },
-    // Argo Column Flex Weights
-    argoAppCol: { flex: 2.5 },
-    argoStatusCol: { flex: 1, textAlign: 'center' },
-    argoSourceCol: { flex: 3.5 },
-    argoDestCol: { flex: 2.5 },
-    // SQ Column Flex Weights
-    sqMetricCol: { flex: 3 },
-    sqValueCol: { flex: 2 },
-    // Last column styling
-    lastCol: {
-        borderRightWidth: 0,
-    },
     code: {
-        fontFamily: 'Courier', // Use a monospace font if available/registered
+        fontFamily: 'Courier',
         backgroundColor: '#f5f5f5',
-        paddingHorizontal: 2,
+        paddingHorizontal: 3,
+        paddingVertical: 1,
         fontSize: 8,
+        borderRadius: 2, // Slight rounding
+        wordBreak: 'break-all',
     },
-    // --- Status Colors for PDF ---
-     statusOk: { color: '#28a745' }, // Green
-     statusWarn: { color: '#fd7e14' }, // Orange
-     statusFail: { color: '#dc3545' }, // Red
-     statusUnknown: { color: '#6c757d' }, // Gray
-     statusProgress: { color: '#0d6efd' }, // Blue
+    // --- Card Styles ---
+    card: {
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
+        borderRadius: 3,
+        padding: 10,
+        marginBottom: 10,
+        backgroundColor: '#FFFFFF', // Ensure background is white
+        flexDirection: 'column', // Default to column layout
+    },
+    cardHeader: {
+        fontSize: 11,
+        fontFamily: 'Helvetica-Bold',
+        marginBottom: 6,
+        color: '#111111',
+    },
+    cardRow: { // For horizontal elements within a card if needed
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 4,
+        alignItems: 'center',
+    },
+    cardLabel: {
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 9,
+        color: '#444444',
+        marginRight: 5, // Space between label and value
+    },
+    cardValue: {
+        fontSize: 9,
+        color: '#333333',
+        flexShrink: 1, // Allow value text to shrink and wrap if needed
+    },
+    // --- Status Styles (Applied to Text or View) ---
+    statusText: {
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 9,
+        paddingHorizontal: 4,
+        paddingVertical: 1,
+        borderRadius: 3,
+        textAlign: 'center', // Center status text
+    },
+    statusIndicator: { // For small colored block indicators
+      width: 10,
+      height: 10,
+      borderRadius: 2,
+      marginRight: 5,
+    },
+    statusOk: { color: '#28a745' }, // Green Text
+    statusWarn: { color: '#fd7e14' }, // Orange Text
+    statusFail: { color: '#dc3545' }, // Red Text
+    statusUnknown: { color: '#6c757d' }, // Gray Text
+    statusProgress: { color: '#0d6efd' }, // Blue Text
+
+    statusOkBg: { backgroundColor: '#28a745' }, // Green Background
+    statusWarnBg: { backgroundColor: '#fd7e14' }, // Orange Background
+    statusFailBg: { backgroundColor: '#dc3545' }, // Red Background
+    statusUnknownBg: { backgroundColor: '#6c757d' }, // Gray Background
+    statusProgressBg: { backgroundColor: '#0d6efd' }, // Blue Background
+
+    // Specific Component Styles
+    argoStatusContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start', // Align statuses to the left
+        marginBottom: 6,
+        gap: 15, // Add gap between status items
+    },
+    sqRatingContainer: {
+       flexDirection: 'row',
+       alignItems: 'center',
+       marginBottom: 5,
+    },
+    sqRatingBox: {
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 10,
+        color: '#FFFFFF', // White text on colored background
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        borderRadius: 3,
+        marginRight: 8,
+        minWidth: 20, // Ensure minimum width for single letters
+        textAlign: 'center',
+    },
+    sqMetricCard: {
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
+        borderRadius: 3,
+        padding: 8,
+        marginBottom: 8,
+        backgroundColor: '#F9F9F9', // Light background for metrics
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    sqMetricLabel: {
+        fontSize: 9,
+        color: '#444444',
+    },
+    sqMetricValue: {
+        fontSize: 10,
+        fontFamily: 'Helvetica-Bold',
+    },
+    jenkinsBuildCard: {
+        borderLeftWidth: 4, // Use left border color for status
+        paddingLeft: 8, // Add padding next to the border
+    },
+    jenkinsBuildHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 4,
+    },
     // --- Footer Style ---
      footer: {
         position: 'absolute',
-        bottom: 15,
-        left: 30,
-        right: 30,
+        bottom: 10, // Raise footer slightly
+        left: 25,
+        right: 25,
         textAlign: 'center',
         color: 'grey',
         fontSize: 8,
+        fontFamily: 'Helvetica',
     },
 });
 
-// --- PDF Status Style Helper (Simplified for common statuses) ---
-const getPdfStatusStyle = (status, building = false) => {
-    if (building) return styles.statusProgress;
+// --- PDF Status Style Helper ---
+// Returns text style and background style separately
+const getPdfStatusStyles = (status, type = 'text', building = false) => {
+    if (building) {
+        return type === 'text' ? styles.statusProgress : styles.statusProgressBg;
+    }
     const lower = status?.toLowerCase() || 'unknown';
-    // Combine common OK/WARN/FAIL states
-    if (['synced', 'healthy', 'succeeded', 'ok', 'passed', 'stable', 'a'].includes(lower)) return styles.statusOk;
-    if (['progressing', 'degraded', 'unstable', 'outofsync', 'b', 'c', 'warn'].includes(lower)) return styles.statusWarn;
-    if (['failed', 'error', 'aborted', 'd', 'e'].includes(lower)) return styles.statusFail;
-    return styles.statusUnknown;
+
+    if (['synced', 'healthy', 'succeeded', 'ok', 'passed', 'stable', 'a'].includes(lower)) {
+        return type === 'text' ? styles.statusOk : styles.statusOkBg;
+    }
+    if (['progressing', 'degraded', 'unstable', 'outofsync', 'b', 'c', 'warn'].includes(lower)) {
+        return type === 'text' ? styles.statusWarn : styles.statusWarnBg;
+    }
+    if (['failed', 'error', 'aborted', 'd', 'e'].includes(lower)) {
+        return type === 'text' ? styles.statusFail : styles.statusFailBg;
+    }
+    return type === 'text' ? styles.statusUnknown : styles.statusUnknownBg;
 };
 
 // --- Footer Component ---
-// Extracted for reusability on each page if needed, but fixed rendering is better
 const PageFooter = () => (
     <Text style={styles.footer} fixed render={({ pageNumber, totalPages }) => (
         `Page ${pageNumber} / ${totalPages}`
@@ -164,174 +259,288 @@ const PageFooter = () => (
 
 
 // --- The PDF Document Component ---
-// Use props: { argoData, jenkinsData, sonarqubeData, barChartImg, donutChartImg }
-const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData, barChartImg, donutChartImg }) => (
+const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData, barChartImg, donutChartImg }) => {
+    const todayDate = new Date().toLocaleDateString(undefined, {
+        year: 'numeric', month: 'long', day: 'numeric'
+    });
+
+    // --- Helper Function for SonarQube Ratings ---
+    const renderSqRating = (key, value) => {
+        const props = key === 'alert_status'
+            ? (getSqQualityGateProps ? getSqQualityGateProps(value) : {label: value, severity: 'unknown'})
+            : (getSqRatingProps ? getSqRatingProps(value) : {label: value, severity: 'unknown'});
+
+        const statusLabel = props.label?.toLowerCase() || props.severity?.toLowerCase() || value?.toLowerCase();
+        const bgStyle = getPdfStatusStyles(statusLabel, 'bg');
+
+        return (
+            <View style={styles.sqRatingContainer}>
+                 <View style={[styles.sqRatingBox, bgStyle]}>
+                     <Text>{props.label || value}</Text>
+                 </View>
+                 <Text style={styles.cardValue}>{getSqMetricLabel(key)}</Text>
+            </View>
+        );
+    };
+
+     // --- Helper Function for SonarQube Metrics ---
+     const renderSqMetric = (key, value) => {
+        const label = getSqMetricLabel(key);
+        let displayValue = value ?? '-';
+        let valueStyle = styles.sqMetricValue; // Default style
+
+        try {
+            switch (key) {
+                case 'ncloc': displayValue = value ? parseInt(value, 10).toLocaleString() : '-'; break;
+                case 'coverage': case 'duplicated_lines_density': displayValue = formatSqPercentage ? formatSqPercentage(value) : `${value}%`; break;
+                case 'sqale_index': displayValue = formatSqDebt ? formatSqDebt(value) : `${value}d`; break;
+                case 'bugs': case 'vulnerabilities':
+                    valueStyle = [valueStyle, parseInt(value, 10) > 0 ? styles.statusFail : styles.statusOk];
+                    displayValue = parseInt(value, 10).toLocaleString();
+                    break;
+                case 'security_hotspots':
+                     valueStyle = [valueStyle, parseInt(value, 10) > 0 ? styles.statusWarn : styles.statusOk];
+                    displayValue = parseInt(value, 10).toLocaleString();
+                    break;
+                case 'code_smells':
+                     displayValue = parseInt(value, 10).toLocaleString();
+                    break;
+                default:
+                     if (!isNaN(parseFloat(value))) {
+                       displayValue = parseFloat(value).toLocaleString();
+                     }
+                     break;
+            }
+        } catch (formatError) {
+            console.error(`PDF Formatting Error for key ${key}:`, formatError);
+            displayValue = value ?? '-';
+        }
+
+        // Skip rendering ratings here as they are handled separately
+        if (['alert_status', 'sqale_rating', 'security_rating', 'reliability_rating'].includes(key)) {
+            return null;
+        }
+
+        return (
+           <View key={key} style={styles.sqMetricCard} wrap={false}>
+               <Text style={styles.sqMetricLabel}>{label}</Text>
+               <Text style={valueStyle}>{displayValue}</Text>
+           </View>
+        );
+     };
+
+    return (
     <Document title="DevOps Report">
 
-        {/* --- Page 1: Bar Chart --- */}
-        {barChartImg && ( // Only render page if image data exists
-            <Page size="A4" style={styles.chartPage} orientation="landscape">
+        {/* Page 1: Title */}
+        <Page size="A4" style={styles.centeredPage} orientation="portrait">
+            <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={styles.mainTitle}>DevOps Dashboard Report</Text>
+                <Text style={styles.titleDate}>{todayDate}</Text>
+            </View>
+            <PageFooter />
+        </Page>
+
+        {/* Page 2: Introduction */}
+        <Page size="A4" style={styles.page} orientation="portrait">
+             <View style={{ paddingTop: 20 }}>
+                 <Text style={[styles.subHeader, { marginBottom: 15, textAlign: 'center'}]}>Report Overview</Text>
+                 {/* ... intro text ... */}
+                 <Text style={styles.introParagraph}>
+                    This document provides a snapshot of the current DevOps status, consolidating key information
+                    from various tools within the CI/CD pipeline. It aims to offer a quick overview of application health,
+                    build performance, and code quality.
+                </Text>
+                <Text style={styles.introParagraph}>
+                    The report includes the following sections:
+                </Text>
+                <Text style={styles.listItem}>
+                    • <Text style={styles.boldText}>Build Status Overview:</Text> A visual summary (bar chart) of recent build outcomes from Jenkins.
+                </Text>
+                <Text style={styles.listItem}>
+                    • <Text style={styles.boldText}>Application Health Overview:</Text> A visual summary (donut chart) of application health and sync status from Argo CD.
+                </Text>
+                 <Text style={styles.listItem}>
+                    • <Text style={styles.boldText}>Argo CD Applications:</Text> Details for each application including status, source, and destination.
+                 </Text>
+                 <Text style={styles.listItem}>
+                    • <Text style={styles.boldText}>SonarQube Analysis:</Text> Key code quality, reliability, and security metrics and ratings.
+                 </Text>
+                <Text style={styles.listItem}>
+                    • <Text style={styles.boldText}>Jenkins Build History:</Text> Details for recent pipeline builds including status and duration.
+                </Text>
+                 <Text style={[styles.introParagraph, { marginTop: 20 }]}>
+                    Please review the following pages for the visual charts and detailed data views.
+                 </Text>
+            </View>
+            <PageFooter />
+        </Page>
+
+        {/* Page 3: Bar Chart (if exists) */}
+        {barChartImg && (
+            <Page size="A4" style={styles.chartPage} orientation="portrait">
                 <Text style={styles.subHeader}>Build Status Overview</Text>
-                <Image
-                    style={styles.chartImage}
-                    src={barChartImg} // Assumes this is a base64 data URI or a URL accessible by the PDF renderer
-                />
+                <Image style={styles.chartImage} src={barChartImg} />
                 <PageFooter />
             </Page>
         )}
 
-        {/* --- Page 2: Donut Chart --- */}
-        {donutChartImg && ( // Only render page if image data exists
-            <Page size="A4" style={styles.chartPage} orientation="landscape">
+        {/* Page 4: Donut Chart (if exists) */}
+        {donutChartImg && (
+            <Page size="A4" style={styles.chartPage} orientation="portrait">
                  <Text style={styles.subHeader}>Application Health Overview</Text>
-                 <Image
-                    style={styles.chartImage}
-                    src={donutChartImg} // Assumes this is a base64 data URI or a URL accessible by the PDF renderer
-                />
+                 <Image style={styles.chartImage} src={donutChartImg}/>
                  <PageFooter />
             </Page>
         )}
 
-        {/* --- Page 3 onwards: Report Details --- */}
-        <Page size="A4" style={styles.page} orientation="landscape"> {/* Landscape might fit tables better */}
+        {/* --- Page 5 onwards: Details --- */}
+        <Page size="A4" style={styles.page} orientation="portrait">
 
-            {/* --- Report Header --- */}
-            <View style={styles.section}>
-                <Text style={styles.header}>DevOps Dashboard Report</Text>
-                <Text style={[styles.text, { textAlign: 'center' }]}> {/* Center generation timestamp */}
-                    Generated: {formatTimestamp ? formatTimestamp(Date.now()) : new Date().toLocaleString()}
-                </Text>
-            </View>
+            {/* --- Report Details Header --- */}
+             <View style={[styles.section, { borderBottomWidth: 0, paddingBottom: 0, marginBottom: 5 }]}>
+                 <Text style={styles.header}>DevOps Dashboard - Details</Text>
+                 <Text style={{ textAlign: 'center', fontSize: 9, color: 'grey', marginBottom: 10 }}>
+                     Generated: {formatTimestamp ? formatTimestamp(Date.now()) : new Date().toLocaleString()}
+                 </Text>
+             </View>
 
             {/* --- Argo CD Section --- */}
-            {/* Added break prop to suggest starting this section on a new page if it follows charts */}
-            <View style={styles.section} wrap={false} >
+            <View style={styles.section} wrap={false}>
                 <Text style={styles.subHeader}>Argo CD Applications</Text>
                 {(argoData?.items && argoData.items.length > 0) ? (
-                    <View style={styles.table}>
-                        <View style={[styles.tableRow, styles.tableHeaderRow]} fixed>
-                            <Text style={[styles.tableColHeader, styles.argoAppCol]}>Application / Project</Text>
-                            <Text style={[styles.tableColHeader, styles.argoStatusCol]}>Sync</Text>
-                            <Text style={[styles.tableColHeader, styles.argoStatusCol]}>Health</Text>
-                            <Text style={[styles.tableColHeader, styles.argoSourceCol]}>Source</Text>
-                            <Text style={[styles.tableColHeader, styles.argoDestCol, styles.lastCol]}>Destination</Text>
-                        </View>
-                        {argoData.items.map(app => {
-                            const md = app.metadata || {}; const sp = app.spec || {}; const st = app.status || {};
-                            const sync = st.sync || {}; const health = st.health || {};
-                            const src = sp.source || {}; const dst = sp.destination || {};
-                            return (
-                                <View key={md.uid || md.name} style={styles.tableRow} wrap={false}>
-                                    <View style={[styles.tableCol, styles.argoAppCol]}>
-                                        <Text style={styles.boldText}>{md.name || 'N/A'}</Text>
-                                        <Text>Proj: {sp.project || 'default'}</Text>
-                                    </View>
-                                    <Text style={[styles.tableCol, styles.argoStatusCol, getPdfStatusStyle(sync.status)]}>{sync.status || '-'}</Text>
-                                    <Text style={[styles.tableCol, styles.argoStatusCol, getPdfStatusStyle(health.status)]}>{health.status || '-'}</Text>
-                                    <View style={[styles.tableCol, styles.argoSourceCol]}>
-                                        <Text>Repo: {src.repoURL?.split('/').slice(-2).join('/') || '-'}</Text> {/* Shorten URL */}
-                                        <Text>Target: {src.targetRevision || 'HEAD'} (<Text style={styles.code}>{sync.revision?.substring(0, 7) || '-'}</Text>)</Text>
-                                        <Text>Path: {src.path || '.'}</Text>
-                                    </View>
-                                    <View style={[styles.tableCol, styles.argoDestCol, styles.lastCol]}>
-                                        <Text>Srv: {dst.server?.replace(/https?:\/\//, '') || '-'}</Text>
-                                        <Text>NS: {dst.namespace || '-'}</Text>
-                                    </View>
-                                </View>
-                            );
-                        })}
-                    </View>
-                ) : (<Text style={styles.text}>No Argo CD application data available.</Text>)}
-            </View>
+                    argoData.items.map(app => {
+                        const md = app.metadata || {}; const sp = app.spec || {}; const st = app.status || {};
+                        const sync = st.sync || {}; const health = st.health || {};
+                        const src = sp.source || {}; const dst = sp.destination || {};
 
-            {/* --- Jenkins Section --- */}
-            <View style={styles.section} wrap={false}>
-                <Text style={styles.subHeader}>Jenkins Build History: {jenkinsData?.jobName || 'pipeline'}</Text>
-                {(jenkinsData?.builds && jenkinsData.builds.length > 0) ? (
-                    <View style={styles.table}>
-                        <View style={[styles.tableRow, styles.tableHeaderRow]} fixed>
-                            <Text style={[styles.tableColHeader, styles.jenkinsBuildCol]}>Build</Text>
-                            <Text style={[styles.tableColHeader, styles.jenkinsResultCol]}>Result</Text>
-                            <Text style={[styles.tableColHeader, styles.jenkinsStartCol]}>Started</Text>
-                            <Text style={[styles.tableColHeader, styles.jenkinsDurationCol]}>Duration</Text>
-                            <Text style={[styles.tableColHeader, styles.jenkinsEndCol, styles.lastCol]}>Finished</Text>
-                        </View>
-                        {jenkinsData.builds.slice(0, 10).map(build => { // Display latest 10
-                            const resultText = getResultText(build.result, build.building);
-                            const resultStyle = getPdfStatusStyle(build.result, build.building);
-                            return (
-                                <View key={build.number} style={styles.tableRow} wrap={false}>
-                                    <Text style={[styles.tableCol, styles.jenkinsBuildCol]}>#{build.number}</Text>
-                                    <Text style={[styles.tableCol, styles.jenkinsResultCol, resultStyle]}>{resultText}</Text>
-                                    <Text style={[styles.tableCol, styles.jenkinsStartCol]}>{formatTimestamp(build.start_time_ms)}</Text>
-                                    <Text style={[styles.tableCol, styles.jenkinsDurationCol]}>{formatDuration(build.duration_ms)}</Text>
-                                    <Text style={[styles.tableCol, styles.jenkinsEndCol, styles.lastCol]}>{formatTimestamp(build.end_time_ms)}</Text>
+                        const syncStatus = sync.status || '-';
+                        const healthStatus = health.status || '-';
+                        const syncStyle = getPdfStatusStyles(syncStatus, 'text');
+                        const healthStyle = getPdfStatusStyles(healthStatus, 'text');
+
+                        return (
+                            <View key={md.uid || md.name} style={styles.card} wrap={false}>
+                                <Text style={styles.cardHeader}>{md.name || 'N/A'}</Text>
+
+                                {/* Status Row */}
+                                <View style={styles.argoStatusContainer}>
+                                     <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                        <Text style={styles.cardLabel}>Sync:</Text>
+                                        <Text style={[styles.statusText, syncStyle]}>{syncStatus}</Text>
+                                     </View>
+                                     <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                        <Text style={styles.cardLabel}>Health:</Text>
+                                        <Text style={[styles.statusText, healthStyle]}>{healthStatus}</Text>
+                                     </View>
                                 </View>
-                            );
-                        })}
-                    </View>
-                ) : (<Text style={styles.text}>No Jenkins build data available for '{jenkinsData?.jobName || 'pipeline'}'.</Text>)}
+
+                                {/* Details in Rows */}
+                                <View style={styles.cardRow}>
+                                    <Text style={styles.cardLabel}>Project:</Text>
+                                    <Text style={styles.cardValue}>{sp.project || 'default'}</Text>
+                                </View>
+                                <View style={styles.cardRow}>
+                                    <Text style={styles.cardLabel}>Repo:</Text>
+                                    <Text style={styles.cardValue}>{src.repoURL?.split('/').slice(-2).join('/') || '-'}</Text>
+                                </View>
+                                <View style={styles.cardRow}>
+                                     <Text style={styles.cardLabel}>Target:</Text>
+                                     <Text style={styles.cardValue}>
+                                        {src.targetRevision || 'HEAD'} (<Text style={styles.code}>{sync.revision?.substring(0, 7) || '-'}</Text>)
+                                     </Text>
+                                </View>
+                                {src.path && src.path !== '.' && ( // Only show path if not default '.'
+                                     <View style={styles.cardRow}>
+                                        <Text style={styles.cardLabel}>Path:</Text>
+                                        <Text style={styles.cardValue}>{src.path}</Text>
+                                    </View>
+                                )}
+                                 <View style={styles.cardRow}>
+                                    <Text style={styles.cardLabel}>Destination:</Text>
+                                    <Text style={styles.cardValue}>
+                                        {dst.server?.replace(/^https?:\/\//, '') || '-'}/{dst.namespace || '-'}
+                                    </Text>
+                                </View>
+                            </View>
+                        );
+                    })
+                ) : (<Text style={styles.text}>No Argo CD application data available.</Text>)}
             </View>
 
             {/* --- SonarQube Section --- */}
             <View style={styles.section} wrap={false}>
-                <Text style={styles.subHeader}>SonarQube Metrics: {sonarqubeData?.projectKey || 'website'}</Text>
-                {(sonarqubeData?.metrics && Object.keys(sonarqubeData.metrics).length > 0) ? (
-                    <View style={styles.table}>
-                        <View style={[styles.tableRow, styles.tableHeaderRow]} fixed>
-                            <Text style={[styles.tableColHeader, styles.sqMetricCol]}>Metric</Text>
-                            <Text style={[styles.tableColHeader, styles.sqValueCol, styles.lastCol]}>Value</Text>
-                        </View>
-                        {Object.entries(sonarqubeData.metrics)
-                            .filter(([key, value]) => value !== null && value !== undefined && getSqMetricLabel(key)) // Only show metrics with labels
-                            .sort(([keyA], [keyB]) => { // Sort for consistent order
-                                const order = ['alert_status', 'bugs', 'vulnerabilities', 'security_hotspots', 'code_smells', 'coverage', 'duplicated_lines_density', 'ncloc', 'sqale_index', 'reliability_rating', 'security_rating', 'sqale_rating'];
+                 <Text style={styles.subHeader}>SonarQube Analysis: {sonarqubeData?.projectKey || 'website'}</Text>
+                 {(sonarqubeData?.metrics && Object.keys(sonarqubeData.metrics).length > 0) ? (
+                    <View style={styles.card} wrap={false}>
+                         {/* Quality Gate and Ratings First */}
+                         {sonarqubeData.metrics['alert_status'] !== undefined && renderSqRating('alert_status', sonarqubeData.metrics['alert_status'])}
+                         {sonarqubeData.metrics['reliability_rating'] !== undefined && renderSqRating('reliability_rating', sonarqubeData.metrics['reliability_rating'])}
+                         {sonarqubeData.metrics['security_rating'] !== undefined && renderSqRating('security_rating', sonarqubeData.metrics['security_rating'])}
+                         {sonarqubeData.metrics['sqale_rating'] !== undefined && renderSqRating('sqale_rating', sonarqubeData.metrics['sqale_rating'])}
+
+                         {/* Separator */}
+                         <View style={{ height: 1, backgroundColor: '#EEEEEE', marginVertical: 8 }} />
+
+                         {/* Other Metrics */}
+                         {Object.entries(sonarqubeData.metrics)
+                            .sort(([keyA], [keyB]) => { // Sort ensures consistent order but ratings are handled above
+                                const order = ['bugs', 'vulnerabilities', 'security_hotspots', 'code_smells', 'coverage', 'duplicated_lines_density', 'ncloc', 'sqale_index'];
                                 return (order.indexOf(keyA) === -1 ? 99 : order.indexOf(keyA)) - (order.indexOf(keyB) === -1 ? 99 : order.indexOf(keyB));
                             })
                             .map(([key, value]) => {
-                                const label = getSqMetricLabel(key);
-                                let displayValue = value ?? '-';
-                                let valueStyle = {};
-
-                                // Apply specific formatting/styling
-                                try { // Wrap formatting in try/catch
-                                    switch (key) {
-                                        case 'ncloc': displayValue = value ? parseInt(value, 10).toLocaleString() : '-'; break;
-                                        case 'coverage': case 'duplicated_lines_density': displayValue = formatSqPercentage(value); break;
-                                        case 'sqale_index': displayValue = formatSqDebt(value); break;
-                                        case 'alert_status':
-                                        case 'sqale_rating': case 'security_rating': case 'reliability_rating': {
-                                            const props = key === 'alert_status' ? getSqQualityGateProps(value) : getSqRatingProps(value);
-                                            displayValue = props.label;
-                                            valueStyle = getPdfStatusStyle(props.label); // Use label/rating for style
-                                            break;
-                                        }
-                                        case 'bugs': case 'vulnerabilities':
-                                            valueStyle = parseInt(value, 10) > 0 ? styles.statusFail : styles.statusOk; break;
-                                        case 'security_hotspots':
-                                            valueStyle = parseInt(value, 10) > 0 ? styles.statusWarn : styles.statusOk; break;
-                                    }
-                                } catch (formatError) {
-                                    console.error("PDF Formatting Error:", formatError);
-                                    displayValue = value ?? '-'; // Fallback to raw value
+                                // Render metric if it's not null/undefined and has a label
+                                if (value !== null && value !== undefined && getSqMetricLabel(key)) {
+                                     return renderSqMetric(key, value); // Use helper function
                                 }
-
-                                return (
-                                    <View key={key} style={styles.tableRow} wrap={false}>
-                                        <Text style={[styles.tableCol, styles.sqMetricCol]}>{label}</Text>
-                                        <Text style={[styles.tableCol, styles.sqValueCol, styles.lastCol, valueStyle]}>{displayValue}</Text>
-                                    </View>
-                                );
+                                return null;
                             })}
                     </View>
-                ) : (<Text style={styles.text}>No SonarQube metrics data available for '{sonarqubeData?.projectKey || 'website'}'.</Text>)}
+                 ) : (<Text style={styles.text}>No SonarQube metrics data available for '{sonarqubeData?.projectKey || 'website'}'.</Text>)}
             </View>
 
-             {/* --- Footer on the main report page --- */}
-             <PageFooter />
 
+            {/* --- Jenkins Section --- */}
+            <View style={styles.section} wrap={false}>
+                <Text style={styles.subHeader}>Jenkins Build History: {jenkinsData?.jobName || 'pipeline'}</Text>
+                 {(jenkinsData?.builds && jenkinsData.builds.length > 0) ? (
+                     jenkinsData.builds.slice(0, 5).map(build => { // Display latest 5 builds as cards
+                         const resultText = getResultText(build.result, build.building);
+                         const statusStyle = getPdfStatusStyles(build.result, 'text', build.building);
+                         const borderStyle = getPdfStatusStyles(build.result, 'bg', build.building); // Use background style for border
+
+                         return (
+                            <View key={build.number} style={[styles.card, styles.jenkinsBuildCard, { borderLeftColor: borderStyle.backgroundColor }]} wrap={false}>
+                                <View style={styles.jenkinsBuildHeader}>
+                                    <Text style={styles.cardHeader}>Build #{build.number}</Text>
+                                    <Text style={[styles.statusText, statusStyle]}>{resultText}</Text>
+                                </View>
+                                <View style={styles.cardRow}>
+                                    <Text style={styles.cardLabel}>Duration:</Text>
+                                    <Text style={styles.cardValue}>{formatDuration ? formatDuration(build.duration_ms) : (build.duration_ms || '-')}</Text>
+                                </View>
+                                <View style={styles.cardRow}>
+                                    <Text style={styles.cardLabel}>Started:</Text>
+                                    <Text style={styles.cardValue}>{formatTimestamp ? formatTimestamp(build.start_time_ms) : (build.start_time_ms || '-')}</Text>
+                                </View>
+                                 {/* Only show Finished time if not building */}
+                                 {!build.building && build.end_time_ms && (
+                                    <View style={styles.cardRow}>
+                                        <Text style={styles.cardLabel}>Finished:</Text>
+                                        <Text style={styles.cardValue}>{formatTimestamp ? formatTimestamp(build.end_time_ms) : (build.end_time_ms || '-')}</Text>
+                                    </View>
+                                 )}
+                            </View>
+                         );
+                     })
+                 ) : (<Text style={styles.text}>No Jenkins build data available for '{jenkinsData?.jobName || 'pipeline'}'.</Text>)}
+            </View>
+
+            {/* Footer */}
+            <PageFooter />
         </Page>
     </Document>
-);
+    );
+};
 
 export default DevOpsReportDocument;

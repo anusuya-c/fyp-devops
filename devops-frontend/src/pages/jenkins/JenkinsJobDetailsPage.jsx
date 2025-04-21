@@ -91,10 +91,8 @@ export default function JenkinsJobDetailsPage() {
       <AppSidebar />
 
       {/* Main Content Area */}
-      <main style={{ flexGrow: 1, padding: 'var(--mantine-spacing-md)', overflowY: 'auto' }}>
+      <main style={{ flexGrow: 1, padding: 'var(--mantine-spacing-md)', overflowY: 'auto', marginLeft: '230px' }}>
         <Container size="xl"> {/* Use a wider container if needed */}
-
-          <Breadcrumbs mb="lg">{breadcrumbItems}</Breadcrumbs>
 
           <Title order={2} mb="lg">
             Build History: {jobName}

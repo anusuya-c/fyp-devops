@@ -45,7 +45,7 @@ const AverageBuildDuration = ({ builds }) => {
       <Stack align="center" spacing="xs">
         {/* Title */}
         <Text size="sm" c="dimmed" ta="center">
-          Avg. Successful Build Duration
+          Average Successful Build Duration
         </Text>
 
         {/* Value */}

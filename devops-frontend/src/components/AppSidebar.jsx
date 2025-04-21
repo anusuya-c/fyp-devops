@@ -11,11 +11,9 @@ import {
   // Import icons relevant to your actual app routes
   IconGauge,       
   IconCode,        
-  IconNotes,        
   IconRadar2,
-  IconHome,
   IconDashboard,
-  IconGhost
+  IconWebhook
 } from '@tabler/icons-react';
 import { Code, Group } from '@mantine/core';
 // Import NavLink from react-router-dom for navigation
@@ -31,7 +29,7 @@ const data = [
   {path: '/home', label: 'Dashboard', icon: IconDashboard},
   { path: '/jenkins-jobs', label: 'Jenkins Jobs', icon: IconCode }, 
   { path: '/sonarqube-projects', label: 'SonarQube projects', icon: IconRadar2 },
-  { path: '/argocd', label: 'Argocd', icon: IconGhost }, 
+  { path: '/argocd', label: 'Argocd', icon: IconWebhook }, 
 ];
 
 export function AppSidebar() {
