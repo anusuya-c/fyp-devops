@@ -32,5 +32,10 @@ export const api = {
 
     getSonarQubeProjectDetails: (projectKey) =>  apiClient.get(`/sonarqube/projects/${projectKey}/details/`),
 
-    getArgocdApplications: () => apiClient.get("/argocd/applications/")
+    getArgocdApplications: () => apiClient.get("/argocd/applications/"),
+
+    // Notifications API
+    getNotifications: () => apiClient.get("/notifications/"),
+    
+    markNotificationAsSeen: (notificationId) => apiClient.post(`/notifications/${notificationId}/mark-seen/`)
 }

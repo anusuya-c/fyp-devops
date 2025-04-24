@@ -4,6 +4,7 @@ import requests
 import logging
 from django.conf import settings
 from requests.auth import HTTPBasicAuth
+from notifications.models import Notification
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -110,9 +111,36 @@ class JenkinsJobDetail(APIView):
                 duration_ms = build.get('duration')
                 end_time_ms = None
                 building = build.get('building', False)
+                build_number = build.get('number')
+                build_result = build.get('result')
 
                 if start_time_ms is not None and duration_ms is not None and not building:
                     end_time_ms = start_time_ms + duration_ms
+
+                # Create notification for new builds
+                if build_number and build_result:
+                    logger.info(f"Checking notification for build {build_number} of job {job_name}")
+                    # Check if notification already exists
+                    existing_notification = Notification.objects.filter(
+                        user=request.user,
+                        build_number=build_number,
+                        job_name=job_name
+                    ).first()
+                    
+                    if not existing_notification:
+                        logger.info(f"Creating new notification for build {build_number} of job {job_name}")
+                        try:
+                            notification = Notification.objects.create(
+                                user=request.user,
+                                build_number=build_number,
+                                build_status=build_result,
+                                job_name=job_name
+                            )
+                            logger.info(f"Created notification with ID: {notification.id}")
+                        except Exception as e:
+                            logger.error(f"Error creating notification: {str(e)}")
+                    else:
+                        logger.info(f"Notification already exists for build {build_number} of job {job_name}")
 
                 commit_messages = []
                 if build.get('changeSet') and build['changeSet'].get('items'):
@@ -122,12 +150,12 @@ class JenkinsJobDetail(APIView):
                     ]
 
                 build_details.append({
-                    'number': build.get('number'),
+                    'number': build_number,
                     'url': build.get('url'),
                     'start_time_ms': start_time_ms,
                     'end_time_ms': end_time_ms,
                     'duration_ms': duration_ms,
-                    'result': build.get('result'),
+                    'result': build_result,
                     'building': building,
                     'description': build.get('description'),
                     'commit_messages': commit_messages,

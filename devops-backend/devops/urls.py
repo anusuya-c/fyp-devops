@@ -26,4 +26,5 @@ urlpatterns = [
     path('api/kubernetes/', include('kubernetes_integration.urls')),
     path('api/ec2/', include('ec2_metrics.urls')),
     path('api/argocd/', include('argocd_integration.urls')),
+    path('api/notifications/', include('notifications.urls')),
 ]

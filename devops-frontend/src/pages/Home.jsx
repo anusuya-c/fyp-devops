@@ -3,17 +3,56 @@ import { AppSidebar } from "../components/AppSidebar";
 import AverageBuildDuration from "../components/dashboard/AverageBuildDuration";
 import { api } from "../api/api";
 import BuildStatusChart from "../components/dashboard/BuildStatusChart";
-import { Card, Grid, Stack, Text } from "@mantine/core";
+import { Card, Grid, Stack, Text, Button, Alert, Modal, Badge, Group, ActionIcon, Box, Collapse } from "@mantine/core";
 import ReportGenerator from "../components/ReportGenerator";
 import QualityMetricsBarChart from "../components/dashboard/QualityMetricsBarChart";
 import html2canvas from 'html2canvas';
+import { IconBell, IconAlertCircle, IconX, IconChevronDown } from "@tabler/icons-react";
 
 export default function HomePage() {
-
   const [builds, setBuilds] = useState([]);
   const [metrics, setMetrics] = useState(null);
   const [donutChartImg, setDonutChartImg] = useState(null);
   const [barChartImg, setBarChartImg] = useState(null);
+  const [error, setError] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [unseenCount, setUnseenCount] = useState(0);
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+  const [historyOpened, setHistoryOpened] = useState(false);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await api.getNotifications();
+        if (response.data) {
+          setNotifications(response.data);
+          const unseen = response.data.filter(n => !n.is_seen).length;
+          setUnseenCount(unseen);
+        }
+      } catch (err) {
+        console.error("Error fetching notifications:", err);
+      }
+    };
+
+    fetchNotifications();
+    // Poll for new notifications every 30 seconds
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleMarkAsSeen = async (notificationId) => {
+    try {
+      await api.markNotificationAsSeen(notificationId);
+      setNotifications(prev => 
+        prev.map(n => 
+          n.id === notificationId ? { ...n, is_seen: true } : n
+        )
+      );
+      setUnseenCount(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error("Error marking notification as seen:", err);
+    }
+  };
 
   useEffect(() => {
     const captureCharts = async () => {
@@ -54,16 +93,14 @@ export default function HomePage() {
           setBuilds([]);
         }
       } catch (err) {
-        setError(err.message || `Failed to fetch details for job ${jobName}.`);
+        setError(err.message || "Failed to fetch Jenkins job details.");
         setBuilds([]);
       }
     };
 
     const loadDetails = async () => {
       try {
-        // Fetch details using the API client
         const response = await api.getSonarQubeProjectDetails('website');
-        // Backend returns { projectKey: '...', metrics: { bugs: '0', ... } }
         if (response.data && response.data.metrics) {
           setMetrics(response.data.metrics);
         } else {
@@ -71,16 +108,15 @@ export default function HomePage() {
           setMetrics(null);
         }
       } catch (err) {
-        console.error(`Error fetching SonarQube details for ${projectKey}:`, err);
-        let message = `Failed to fetch details for project ${projectKey}.`;
+        console.error("Error fetching SonarQube details:", err);
         if (err.response) {
-          message += ` Status: ${err.response.status} - ${err.response.data?.error || err.message}`;
-          // Specific message for 404
           if (err.response.status === 404) {
-            message = `SonarQube project '${projectKey}' not found or access denied.`
+            setError("SonarQube project not found or access denied.");
+          } else {
+            setError(`Failed to fetch SonarQube details. Status: ${err.response.status}`);
           }
         } else {
-          message += ` ${err.message}`;
+          setError("Failed to fetch SonarQube details.");
         }
         setMetrics(null);
       }
@@ -90,6 +126,10 @@ export default function HomePage() {
     loadDetails();
   }, []);
 
+  // Split notifications into unseen and seen
+  const unseenNotifications = notifications.filter(n => !n.is_seen);
+  const seenNotifications = notifications.filter(n => n.is_seen);
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <AppSidebar />
@@ -98,12 +138,164 @@ export default function HomePage() {
           <div>
             <h1>DevSecOps Security Monitor</h1>
           </div>
+          <div>
+            <Box pos="relative" style={{ display: 'inline-block' }}>
+              <ActionIcon 
+                variant="subtle" 
+                size="xl" 
+                onClick={() => setIsNotificationModalOpen(true)}
+              >
+                <IconBell size="2rem" />
+              </ActionIcon>
+              {unseenCount > 0 && (
+                <Badge 
+                  size="sm" 
+                  variant="filled" 
+                  color="red" 
+                  style={{
+                    position: 'absolute',
+                    top: '0px',
+                    right: '0px',
+                    minWidth: '1.2rem',
+                    height: '1.2rem',
+                    padding: '0 4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '1rem',
+                    pointerEvents: 'none',
+                    transform: 'translate(25%, -25%)',
+                  }}
+                >
+                  {unseenCount}
+                </Badge>
+              )}
+            </Box>
+          </div>
         </div>
+        
+        {error && (
+          <Alert 
+            icon={<IconAlertCircle size="1rem" />} 
+            title="Error" 
+            color="red" 
+            mb="md"
+            withCloseButton
+            onClose={() => setError(null)}
+          >
+            {error}
+          </Alert>
+        )}
+
+        <Modal
+          opened={isNotificationModalOpen}
+          onClose={() => setIsNotificationModalOpen(false)}
+          title="Notifications"
+          size="xl"
+        >
+          <Stack spacing="md">
+            {/* Current Notifications */}
+            {unseenNotifications.length === 0 && seenNotifications.length === 0 ? (
+              <Text c="dimmed" ta="center">No notifications</Text>
+            ) : (
+              <>
+                {unseenNotifications.length > 0 && (
+                  <div>
+                    <Text fw={500} mb="sm">New Notifications</Text>
+                    <Grid>
+                      {unseenNotifications.map(notification => (
+                        <Grid.Col key={notification.id} span={12}>
+                          <Card withBorder>
+                            <Box pos="relative">
+                              <ActionIcon 
+                                variant="subtle" 
+                                color="blue" 
+                                onClick={() => handleMarkAsSeen(notification.id)}
+                                pos="absolute"
+                                top={0}
+                                right={0}
+                                style={{ zIndex: 1 }}
+                              >
+                                <IconX size="1rem" />
+                              </ActionIcon>
+                              <div>
+                                <Group position="apart" align="center">
+                                  <div>
+                                    <Text fw={500}>Build #{notification.build_number}</Text>
+                                    <Text size="sm" c="dimmed">{notification.job_name}</Text>
+                                  </div>
+                                  <Badge 
+                                    color={notification.build_status === 'SUCCESS' ? 'green' : 
+                                           notification.build_status === 'FAILURE' ? 'red' : 'yellow'}
+                                  >
+                                    {notification.build_status}
+                                  </Badge>
+                                </Group>
+                                <Text size="xs" c="dimmed" mt="xs">
+                                  {new Date(notification.created_at).toLocaleString()}
+                                </Text>
+                              </div>
+                            </Box>
+                          </Card>
+                        </Grid.Col>
+                      ))}
+                    </Grid>
+                  </div>
+                )}
+
+                {/* History Section */}
+                {seenNotifications.length > 0 && (
+                  <div>
+                    <Button 
+                      variant="subtle" 
+                      onClick={() => setHistoryOpened(o => !o)}
+                      rightIcon={<IconChevronDown 
+                        size="1rem" 
+                        style={{ 
+                          transform: historyOpened ? 'rotate(180deg)' : 'none',
+                          transition: 'transform 200ms ease',
+                        }} 
+                      />}
+                      fullWidth
+                    >
+                      History ({seenNotifications.length})
+                    </Button>
+                    
+                    <Collapse in={historyOpened}>
+                      <Grid mt="xs">
+                        {seenNotifications.map(notification => (
+                          <Grid.Col key={notification.id} span={12}>
+                            <Card withBorder>
+                              <Group position="apart" align="center">
+                                <div>
+                                  <Text fw={500}>Build #{notification.build_number}</Text>
+                                  <Text size="sm" c="dimmed">{notification.job_name}</Text>
+                                </div>
+                                <Badge 
+                                  color={notification.build_status === 'SUCCESS' ? 'green' : 
+                                         notification.build_status === 'FAILURE' ? 'red' : 'yellow'}
+                                >
+                                  {notification.build_status}
+                                </Badge>
+                              </Group>
+                              <Text size="xs" c="dimmed" mt="xs">
+                                {new Date(notification.created_at).toLocaleString()}
+                              </Text>
+                            </Card>
+                          </Grid.Col>
+                        ))}
+                      </Grid>
+                    </Collapse>
+                  </div>
+                )}
+              </>
+            )}
+          </Stack>
+        </Modal>
+
         <Grid>
           <Grid.Col span={{ base: 12, md: 7 }} mt="md">
-
             <AverageBuildDuration builds={builds} />
-
           </Grid.Col>
 
           <Grid.Col span={{ base: 12, md: 5 }} mt="md">
@@ -126,9 +318,8 @@ export default function HomePage() {
               <BuildStatusChart builds={builds} />
             </div>
           </Grid.Col>
-
         </Grid>
       </main>
     </div>
-  )
+  );
 }

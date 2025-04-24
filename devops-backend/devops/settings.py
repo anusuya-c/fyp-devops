@@ -97,7 +97,8 @@ INSTALLED_APPS = [
     'sonarqube_integration',
     'kubernetes_integration',
     'ec2_metrics',
-    'argocd_integration',   
+    'argocd_integration',
+    'notifications',   
 ]
 
 REST_AUTH = {
