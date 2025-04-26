@@ -131,11 +131,12 @@ export default function LoginPage() {
             setRegisterErrors((prevErrors) => ({ ...prevErrors, general: "Please fix the errors above." }));
             return;
         }
-         setRegisterErrors({ username: "", email: "", password1: "", password2: "", general: "" }); // Clear errors on successful validation
+        setRegisterErrors({ username: "", email: "", password1: "", password2: "", general: "" }); // Clear errors on successful validation
         const payload = {
             username: registerFormData.username,
             email: registerFormData.email,
-            password: registerFormData.password1,
+            password1: registerFormData.password1,
+            password2: registerFormData.password2,
         };
         try {
             await api.register(payload);
@@ -147,17 +148,19 @@ export default function LoginPage() {
             setRegisterFormData({ username: "", email: "", password1: "", password2: "" });
             setActiveTab('login'); // Switch to login tab after successful registration
         } catch (error) {
-             console.error("Registration Error:", error);
-             const errorMessage = error.response?.data?.detail ||
-                                  error.response?.data?.username?.[0] ||
-                                  error.response?.data?.email?.[0] ||
-                                  'An error occurred during registration.';
-             notifications.show({
-                 title: 'Registration Failed',
-                 message: errorMessage,
-                 color: 'red',
-             });
-             setRegisterErrors((prevErrors) => ({ ...prevErrors, general: errorMessage }));
+            console.error("Registration Error:", error);
+            const errorMessage = error.response?.data?.detail ||
+                                error.response?.data?.username?.[0] ||
+                                error.response?.data?.email?.[0] ||
+                                error.response?.data?.password1?.[0] ||
+                                error.response?.data?.password2?.[0] ||
+                                'An error occurred during registration.';
+            notifications.show({
+                title: 'Registration Failed',
+                message: errorMessage,
+                color: 'red',
+            });
+            setRegisterErrors((prevErrors) => ({ ...prevErrors, general: errorMessage }));
         }
     };
 
@@ -200,6 +203,9 @@ export default function LoginPage() {
                                     <Stack>
                                         <TextInput required label="Username" placeholder="Your username" name="username" value={loginFormData.username} onChange={handleLoginChange} error={loginErrors.username || null} />
                                         <PasswordInput required label="Password" placeholder="Your password" name="userpassword" value={loginFormData.userpassword} onChange={handleLoginChange} error={loginErrors.userpassword || null} />
+                                        <Anchor component="button" type="button" onClick={() => navigate('/forgot-password')} size="sm" ta="right">
+                                            Forgot password?
+                                        </Anchor>
                                         {loginErrors.general && <Text c="red" size="sm" ta="center">{loginErrors.general}</Text>}
                                         <Button type="submit" fullWidth mt="md">Login</Button>
                                     </Stack>

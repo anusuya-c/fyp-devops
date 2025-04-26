@@ -109,26 +109,46 @@ export default function RegisterPage() {
     };
 
     try {
-      await api.register(payload);
-      notifications.show({
-        title: 'Registration Successful',
-        message: `User ${formData.username} has been registerd successfully!`
-      })
+      console.log(payload);
+      const response = await api.register(payload);
+      if (response.status === 201) {
+        notifications.show({
+          title: 'Registration Successful',
+          message: `User ${formData.username} has been registered successfully!`,
+          color: 'green'
+        });
 
-      setFormData({
-        username: "",
-        email: "",
-        password1: "",
-        password2: "",
-      });
+        setFormData({
+          username: "",
+          email: "",
+          password1: "",
+          password2: "",
+        });
 
-      navigate('/login')
-
-    } catch (error){
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error("Registration error:", error.response?.data);
+      const errorMessage = error.response?.data?.detail || 
+                          error.response?.data?.password1?.[0] || 
+                          error.response?.data?.password2?.[0] ||
+                          'There was an error while trying to register';
+      
       notifications.show({
         title: 'Registration Failed',
-        message: 'There was an error while trying to Register'
-      })
+        message: errorMessage,
+        color: 'red'
+      });
+
+      // Update form errors if specific field errors are returned
+      if (error.response?.data) {
+        setErrors({
+          ...errors,
+          password1: error.response.data.password1?.[0] || "",
+          password2: error.response.data.password2?.[0] || "",
+          general: errorMessage
+        });
+      }
     }
   };
 

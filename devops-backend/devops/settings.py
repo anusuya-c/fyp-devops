@@ -160,7 +160,18 @@ REST_FRAMEWORK = {
 SITE_ID = 1
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'anusuyachudal3@gmail.com'  # You'll need to add your Gmail address here
+EMAIL_HOST_PASSWORD = 'ysvr mlza urly eodq'  # You'll need to add your Gmail app password here
+
+# Password reset settings
+PASSWORD_RESET_TIMEOUT = 3600  # 1 hour in seconds
+FRONTEND_URL = "http://localhost:5173"
+FRONTEND_DOMAIN = "localhost:5173"
+SITE_NAME = "DevOps Platform"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  
@@ -191,10 +202,11 @@ ROOT_URLCONF = 'devops.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',

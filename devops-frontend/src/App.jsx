@@ -12,6 +12,8 @@ import { AuthProvider, useAuth } from "./auth/AuthContext";
 
 import RegisterPage from "./pages/auth/Register";
 import LoginPage from "./pages/auth/Login";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 import HomePage from "./pages/Home";
 import JenkinsJobsPage from "./pages/jenkins/JenkinsJobsPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
@@ -50,6 +52,14 @@ function App() {
             <Route
               path="/login"
               element={<RedirectIfAuthenticated><LoginPage /></RedirectIfAuthenticated>}
+            />
+            <Route
+              path="/forgot-password"
+              element={<RedirectIfAuthenticated><ForgotPassword /></RedirectIfAuthenticated>}
+            />
+            <Route
+              path="/reset-password/:uidb64/:token"
+              element={<RedirectIfAuthenticated><ResetPassword /></RedirectIfAuthenticated>}
             />
             <Route
               path="/"
