@@ -15,7 +15,7 @@ import {
   IconDashboard,
   IconWebhook
 } from '@tabler/icons-react';
-import { Code, Group } from '@mantine/core';
+import { Code, Group, Image } from '@mantine/core';
 // Import NavLink from react-router-dom for navigation
 import { NavLink } from 'react-router-dom';
 // Import useAuth hook to access logout function
@@ -58,10 +58,12 @@ export function AppSidebar() {
   return (
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
-        <Group className={classes.header} justify="space-between">
+        <Group className={classes.header} justify="space-between" >
           {/* Replace MantineLogo with your app logo/name if desired */}
           {/* <MantineLogo size={28} /> */}
-          <span style={{fontSize: '1.2rem', fontWeight: 'bold'}}>DevOps UI</span> {/* Example App Name */}
+          
+            <Image src="/logo.png" alt="DevSecOps Monitor Logo"/>
+          
           {/* Optional: Version code */}
           {/* <Code fw={700}>v1.0.0</Code> */}
         </Group>

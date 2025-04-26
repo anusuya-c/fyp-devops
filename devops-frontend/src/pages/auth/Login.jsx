@@ -10,7 +10,8 @@ import {
     Text,
     Tabs,
     Flex,
-    Anchor, // Import Anchor for links
+    Anchor,
+    Image, // Import Anchor for links
 } from "@mantine/core";
 import { useAuth } from "../../auth/AuthContext";
 import { api } from "../../api/api";
@@ -178,9 +179,11 @@ export default function LoginPage() {
                 wrap="wrap"
             >
                 {/* Logo */}
-                <Title order={1} c="blue.6" >
-                    DevSecOps Monitor
-                </Title>
+                <Image
+                    src="/logo.png"
+                    alt="DevSecOps Monitor Logo"
+                    w={"50%"}
+                />
 
                 {/* Combined Login/Register Card + Switch Links */}
                 <Stack align="center" miw={420}> {/* Stack to hold Paper and switch links */}
