@@ -125,7 +125,7 @@ export const formatSqDebt = (minutesStr) => {
   }
   if (minutes === 0) return "0min";
 
-  const hoursInDay = 8; // SonarQube default assumption
+  const hoursInDay = 8;
   const minsInHour = 60;
   const minsInDay = hoursInDay * minsInHour;
 
@@ -139,7 +139,7 @@ export const formatSqDebt = (minutesStr) => {
   if (hours > 0) parts.push(`${hours}h`);
   if (remainingMinutes > 0) parts.push(`${remainingMinutes}min`);
 
-  return parts.join(' ') || '0min'; // Ensure '0min' if calculation leads to empty
+  return parts.join(' ') || '0min';
 };
 
 /**
@@ -169,7 +169,7 @@ export const getSqRatingProps = (ratingLetter) => {
     case 'C': return { label: 'C', color: 'yellow' };
     case 'D': return { label: 'D', color: 'orange' };
     case 'E': return { label: 'E', color: 'red' };
-    default: return { label: ratingLetter || '-', color: 'gray' }; // Handle null or unexpected values
+    default: return { label: ratingLetter || '-', color: 'gray' };
   }
 };
 
@@ -207,7 +207,6 @@ export const getSqMetricLabel = (metricKey) => {
     reliability_rating: 'Reliability Rating',
     alert_status: 'Quality Gate',
     sqale_index: 'Technical Debt',
-    // Add more as needed
   };
-  return labels[metricKey] || metricKey; // Return key if no label defined
+  return labels[metricKey] || metricKey;
 };

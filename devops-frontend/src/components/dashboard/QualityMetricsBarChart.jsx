@@ -17,8 +17,8 @@ const QualityMetricsBarChart = ({ metrics }) => {
           { key: 'coverage', label: 'Coverage (%)' },
           { key: 'bugs', label: 'Bugs' },
           { key: 'duplicated_lines_density', label: 'Dupl. Density (%)' },
-          { key: 'code_smells', label: 'Code Smells' }, // Label that might be skipped
-          { key: 'vulnerabilities', label: 'Vulnerabilities' }, // Label that might be skipped
+          { key: 'code_smells', label: 'Code Smells' },
+          { key: 'vulnerabilities', label: 'Vulnerabilities' },
           { key: 'security_hotspots', label: 'Sec. Hotspots' },
         ];
 
@@ -34,11 +34,7 @@ const QualityMetricsBarChart = ({ metrics }) => {
               value: parsedValue,
             });
           } else {
-            // Log skipped metrics but don't add them to chart data if non-numeric
             console.warn(`Non-numeric metric skipped (won't be plotted): ${metric.label}`);
-            // If you *wanted* to show a gap/zero, you could push:
-            // processedData.push({ metric: metric.label, value: 0 });
-            // But current behavior (skipping) is usually preferred.
           }
         }
 

@@ -206,10 +206,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 4,
     },
-    // --- Footer Style ---
-     footer: {
+    footer: {
         position: 'absolute',
-        bottom: 10, // Raise footer slightly
+        bottom: 10,
         left: 25,
         right: 25,
         textAlign: 'center',
@@ -243,7 +242,6 @@ const PageFooter = () => (
     )} />
 );
 
-
 const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData, barChartImg, donutChartImg }) => {
     const todayDate = new Date().toLocaleDateString(undefined, {
         year: 'numeric', month: 'long', day: 'numeric'
@@ -270,7 +268,7 @@ const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData, barChartIm
      const renderSqMetric = (key, value) => {
         const label = getSqMetricLabel(key);
         let displayValue = value ?? '-';
-        let valueStyle = styles.sqMetricValue; // Default style
+        let valueStyle = styles.sqMetricValue;
 
         try {
             switch (key) {
@@ -304,12 +302,12 @@ const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData, barChartIm
         }
 
         return (
-           <View key={key} style={styles.sqMetricCard} wrap={false}>
-               <Text style={styles.sqMetricLabel}>{label}</Text>
-               <Text style={valueStyle}>{displayValue}</Text>
-           </View>
+            <View style={styles.sqMetricCard}>
+                <Text style={styles.sqMetricLabel}>{label}</Text>
+                <Text style={valueStyle}>{displayValue}</Text>
+            </View>
         );
-     };
+    };
 
     return (
     <Document title="DevOps Report">

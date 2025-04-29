@@ -78,7 +78,6 @@ class JenkinsJobList(APIView):
 
 
 class JenkinsJobDetail(APIView):
-
     permission_classes = [IsAuthenticated] 
 
     def get(self, request, job_name, format=None):
