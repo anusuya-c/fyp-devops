@@ -17,8 +17,8 @@ const QualityMetricsBarChart = ({ metrics }) => {
           { key: 'coverage', label: 'Coverage (%)' },
           { key: 'bugs', label: 'Bugs' },
           { key: 'duplicated_lines_density', label: 'Dupl. Density (%)' },
-          { key: 'code_smells', label: 'Code Smells' },
-          { key: 'vulnerabilities', label: 'Vulnerabilities' },
+          { key: 'code_smells', label: 'Code Smells' }, 
+          { key: 'vulnerabilities', label: 'Vulnerabilities' }, 
           { key: 'security_hotspots', label: 'Sec. Hotspots' },
         ];
 
