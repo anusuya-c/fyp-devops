@@ -34,27 +34,18 @@ JENKINS_API_TOKEN = os.environ.get('JENKINS_API_TOKEN', '11ba358712d0b24daa8ed8d
 SONARQUBE_URL = os.environ.get("SONARQUBE_URL", "http://23.21.183.151:9000") 
 SONARQUBE_API_TOKEN = os.environ.get("SONARQUBE_API_TOKEN", "squ_9341a1447d4d1a2b5ad05cf537b54e0ebbcb4773")
 
-
-KUBECONFIG_FILENAME = "k3s_django_config.yaml"
-DEFAULT_KUBECONFIG_PATH = str(BASE_DIR / KUBECONFIG_FILENAME )
-KUBERNETES_CONFIG_PATH = os.environ.get("KUBERNETES_CONFIG_PATH", DEFAULT_KUBECONFIG_PATH)
-
-EC2_INSTANCE_IDS = ['i-0b1ed2204719f11dc', 'i-0babfa0f37936acef']
-
 ARGOCD_URL = os.getenv("ARGOCD_SERVER_URL", 'https://44.194.151.195:31931')
 ARGOCD_USERNAME = os.getenv("ARGOCD_USERNAME", 'admin')
 ARGOCD_PASSWORD = os.getenv("ARGOCD_PASSWORD", 'Argocd@123')
 ARGOCD_SSL_VERIFY = os.getenv("ARGOCD_SSL_VERIFY", "True").lower() in ('true', '1', 't')
 ARGOCD_TOKEN_CACHE_TIMEOUT = int(os.getenv("ARGOCD_TOKEN_CACHE_TIMEOUT", 60 * 60 * 23))
 ARGOCD_API_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcmdvY2QiLCJzdWIiOiJhZG1pbjphcGlLZXkiLCJuYmYiOjE3NDU2ODY3NTAsImlhdCI6MTc0NTY4Njc1MCwianRpIjoiN2U3NThmYzUtNDZlMy00ZDkxLTlhNmUtNWFhMjk2MTNhNjE2In0.LlH-vxg-dyAB9tzzDOu3jRGOfc9Kvg2ep3sMW-YDKJU'
-# ARGOCD_API_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcmdvY2QiLCJzdWIiOiJhZG1pbjphcGlLZXkiLCJuYmYiOjE3NDUwODEyMTIsImlhdCI6MTc0NTA4MTIxMiwianRpIjoiZDVlZDI5MGMtZWYwNS00ODdjLWEzZmUtOWI0ZDEyZGFmYmZlIn0.7-lNPbo8Mn6WhiXnPGXX7xSPgK9s3uW9d3QibGZalxg'
 ARGOCD_VERIFY_SSL = False
 
 CACHES = {
     'default': {
-        # Use LocMemCache for development (not shared between processes)
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'argocd-token-cache', # Unique identifier for this cache instance
+        'LOCATION': 'argocd-token-cache',
         'TIMEOUT': ARGOCD_TOKEN_CACHE_TIMEOUT,
     }
 }
@@ -70,7 +61,6 @@ SONARQUBE_DEFAULT_METRIC_KEYS = [
     'alert_status', 
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -82,22 +72,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
      # 3rd Party Apps
-    'rest_framework',            # Add DRF
-    'rest_framework.authtoken', # Needed by dj-rest-auth by default, or configure for JWT
-    'dj_rest_auth',              # Add dj-rest-auth
-    'django.contrib.sites',      # Required by dj-rest-auth registration
-    'allauth',                   # Required by dj-rest-auth
-    'allauth.account',           # Required by dj-rest-auth
-    'allauth.socialaccount',     # Optional: If you want social login later
-    'dj_rest_auth.registration', # Add dj-rest-auth registration module
-    'corsheaders',               # Add CORS headers
+    'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
+    'corsheaders',
 
     # my apps
     'accounts',
     'jenkins_api',
     'sonarqube_integration',
-    'kubernetes_integration',
-    'ec2_metrics',
     'argocd_integration',
     'notifications',   
 ]

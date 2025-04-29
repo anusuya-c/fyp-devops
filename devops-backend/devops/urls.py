@@ -50,8 +50,6 @@ urlpatterns = [
     # Other API endpoints
     path('api/jenkins/', include('jenkins_api.urls')),
     path('api/sonarqube/', include('sonarqube_integration.urls')),
-    path('api/kubernetes/', include('kubernetes_integration.urls')),
-    path('api/ec2/', include('ec2_metrics.urls')),
     path('api/argocd/', include('argocd_integration.urls')),
     path('api/notifications/', include('notifications.urls')),
 ]

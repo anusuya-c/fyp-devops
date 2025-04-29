@@ -4,10 +4,10 @@ import { DonutChart } from '@mantine/charts';
 import { IconChartDonut3, IconCircleCheck, IconCircleX, IconCircleMinus } from '@tabler/icons-react'; 
 
 const BuildStatusChart = ({ builds }) => {
-  const theme = useMantineTheme(); // Hook to access theme colors\
+  const theme = useMantineTheme(); 
   const statusCounts = builds?.reduce(
     (acc, build) => {
-      const result = build?.result; // Handle potentially missing result
+      const result = build?.result; 
       if (result === 'SUCCESS') {
         acc.success += 1;
       } else if (result === 'FAILURE') {
@@ -17,8 +17,8 @@ const BuildStatusChart = ({ builds }) => {
       }
       return acc;
     },
-    { success: 0, failure: 0, aborted: 0 } // Initial counts
-  ) || { success: 0, failure: 0, aborted: 0 }; // Default if builds is null/undefined
+    { success: 0, failure: 0, aborted: 0 } 
+  ) || { success: 0, failure: 0, aborted: 0 }; 
 
   const totalBuildsCounted = statusCounts.success + statusCounts.failure + statusCounts.aborted;
 
@@ -31,7 +31,7 @@ const BuildStatusChart = ({ builds }) => {
   if (!builds) {
     return (
       <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <Center style={{ height: 300 }}> {/* Give card a height during loading */}
+        <Center style={{ height: 300 }}> 
           <Loader size="sm" />
           <Text ml="xs" size="sm" c="dimmed">Loading build data...</Text>
         </Center>
