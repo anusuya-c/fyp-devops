@@ -1,22 +1,15 @@
 import React from 'react';
-// Import Image component
 import { Page, Text, View, Document, StyleSheet, Font, Image } from '@react-pdf/renderer';
-
-// Import your formatting functions - ensure they don't rely on browser/DOM APIs
 import {
-    formatDuration, formatTimestamp, getResultColor, getResultText, // Assuming getResultColor is adapted or not used for PDF color directly
+    formatDuration, formatTimestamp, getResultColor, getResultText, 
     formatSqDebt, formatSqPercentage, getSqRatingProps, getSqQualityGateProps, getSqMetricLabel
-} from '../../utils/formatting'; // Adjust path as needed
+} from '../../utils/formatting'; 
 
-// --- Register Fonts (Optional but Recommended) ---
-// Font.register({ family: 'YourFontFamily', src: '/path/to/font.ttf' }); // None added per request
-
-// --- Styles ---
 const styles = StyleSheet.create({
     page: {
         flexDirection: 'column',
         backgroundColor: '#FFFFFF',
-        padding: 25, // Slightly reduce padding for more content space
+        padding: 25, 
         fontSize: 9,
         fontFamily: 'Helvetica',
     },
@@ -46,8 +39,7 @@ const styles = StyleSheet.create({
     },
     section: {
         marginBottom: 15,
-        paddingBottom: 5, // Reduced bottom padding for section breaks
-        // Removed bottom border for cleaner look with cards
+        paddingBottom: 5, 
     },
     mainTitle: {
         fontSize: 24,
@@ -70,18 +62,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     subHeader: {
-        fontSize: 13, // Slightly larger subheaders
-        marginBottom: 10, // Increased space below subheader
+        fontSize: 13, 
+        marginBottom: 10, 
         fontFamily: 'Helvetica-Bold',
         color: '#333333',
-        borderBottomWidth: 1.5, // Add underline to subheaders
+        borderBottomWidth: 1.5, 
         borderBottomColor: '#EEEEEE',
         paddingBottom: 3,
     },
     text: {
         marginBottom: 4,
         lineHeight: 1.3,
-        fontSize: 9, // Base text size for cards
+        fontSize: 9, 
     },
     introParagraph: {
         marginBottom: 10,
@@ -102,18 +94,17 @@ const styles = StyleSheet.create({
         paddingHorizontal: 3,
         paddingVertical: 1,
         fontSize: 8,
-        borderRadius: 2, // Slight rounding
+        borderRadius: 2, 
         wordBreak: 'break-all',
     },
-    // --- Card Styles ---
     card: {
         borderWidth: 1,
         borderColor: '#E0E0E0',
         borderRadius: 3,
         padding: 10,
         marginBottom: 10,
-        backgroundColor: '#FFFFFF', // Ensure background is white
-        flexDirection: 'column', // Default to column layout
+        backgroundColor: '#FFFFFF', 
+        flexDirection: 'column', 
     },
     cardHeader: {
         fontSize: 11,
@@ -121,7 +112,7 @@ const styles = StyleSheet.create({
         marginBottom: 6,
         color: '#111111',
     },
-    cardRow: { // For horizontal elements within a card if needed
+    cardRow: { 
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 4,
@@ -131,46 +122,44 @@ const styles = StyleSheet.create({
         fontFamily: 'Helvetica-Bold',
         fontSize: 9,
         color: '#444444',
-        marginRight: 5, // Space between label and value
+        marginRight: 5, 
     },
     cardValue: {
         fontSize: 9,
         color: '#333333',
-        flexShrink: 1, // Allow value text to shrink and wrap if needed
+        flexShrink: 1, 
     },
-    // --- Status Styles (Applied to Text or View) ---
     statusText: {
         fontFamily: 'Helvetica-Bold',
         fontSize: 9,
         paddingHorizontal: 4,
         paddingVertical: 1,
         borderRadius: 3,
-        textAlign: 'center', // Center status text
+        textAlign: 'center', 
     },
-    statusIndicator: { // For small colored block indicators
+    statusIndicator: { 
       width: 10,
       height: 10,
       borderRadius: 2,
       marginRight: 5,
     },
-    statusOk: { color: '#28a745' }, // Green Text
-    statusWarn: { color: '#fd7e14' }, // Orange Text
-    statusFail: { color: '#dc3545' }, // Red Text
-    statusUnknown: { color: '#6c757d' }, // Gray Text
-    statusProgress: { color: '#0d6efd' }, // Blue Text
+    statusOk: { color: '#28a745' }, 
+    statusWarn: { color: '#fd7e14' }, 
+    statusFail: { color: '#dc3545' }, 
+    statusUnknown: { color: '#6c757d' }, 
+    statusProgress: { color: '#0d6efd' }, 
 
-    statusOkBg: { backgroundColor: '#28a745' }, // Green Background
-    statusWarnBg: { backgroundColor: '#fd7e14' }, // Orange Background
-    statusFailBg: { backgroundColor: '#dc3545' }, // Red Background
-    statusUnknownBg: { backgroundColor: '#6c757d' }, // Gray Background
-    statusProgressBg: { backgroundColor: '#0d6efd' }, // Blue Background
+    statusOkBg: { backgroundColor: '#28a745' }, 
+    statusWarnBg: { backgroundColor: '#fd7e14' }, 
+    statusFailBg: { backgroundColor: '#dc3545' }, 
+    statusUnknownBg: { backgroundColor: '#6c757d' }, 
+    statusProgressBg: { backgroundColor: '#0d6efd' }, 
 
-    // Specific Component Styles
     argoStatusContainer: {
         flexDirection: 'row',
-        justifyContent: 'flex-start', // Align statuses to the left
+        justifyContent: 'flex-start', 
         marginBottom: 6,
-        gap: 15, // Add gap between status items
+        gap: 15, 
     },
     sqRatingContainer: {
        flexDirection: 'row',
@@ -180,12 +169,12 @@ const styles = StyleSheet.create({
     sqRatingBox: {
         fontFamily: 'Helvetica-Bold',
         fontSize: 10,
-        color: '#FFFFFF', // White text on colored background
+        color: '#FFFFFF', 
         paddingHorizontal: 6,
         paddingVertical: 2,
         borderRadius: 3,
         marginRight: 8,
-        minWidth: 20, // Ensure minimum width for single letters
+        minWidth: 20, 
         textAlign: 'center',
     },
     sqMetricCard: {
@@ -194,7 +183,7 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         padding: 8,
         marginBottom: 8,
-        backgroundColor: '#F9F9F9', // Light background for metrics
+        backgroundColor: '#F9F9F9', 
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -208,8 +197,8 @@ const styles = StyleSheet.create({
         fontFamily: 'Helvetica-Bold',
     },
     jenkinsBuildCard: {
-        borderLeftWidth: 4, // Use left border color for status
-        paddingLeft: 8, // Add padding next to the border
+        borderLeftWidth: 4, 
+        paddingLeft: 8, 
     },
     jenkinsBuildHeader: {
         flexDirection: 'row',
@@ -230,8 +219,6 @@ const styles = StyleSheet.create({
     },
 });
 
-// --- PDF Status Style Helper ---
-// Returns text style and background style separately
 const getPdfStatusStyles = (status, type = 'text', building = false) => {
     if (building) {
         return type === 'text' ? styles.statusProgress : styles.statusProgressBg;
@@ -250,7 +237,6 @@ const getPdfStatusStyles = (status, type = 'text', building = false) => {
     return type === 'text' ? styles.statusUnknown : styles.statusUnknownBg;
 };
 
-// --- Footer Component ---
 const PageFooter = () => (
     <Text style={styles.footer} fixed render={({ pageNumber, totalPages }) => (
         `Page ${pageNumber} / ${totalPages}`
@@ -258,13 +244,11 @@ const PageFooter = () => (
 );
 
 
-// --- The PDF Document Component ---
 const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData, barChartImg, donutChartImg }) => {
     const todayDate = new Date().toLocaleDateString(undefined, {
         year: 'numeric', month: 'long', day: 'numeric'
     });
 
-    // --- Helper Function for SonarQube Ratings ---
     const renderSqRating = (key, value) => {
         const props = key === 'alert_status'
             ? (getSqQualityGateProps ? getSqQualityGateProps(value) : {label: value, severity: 'unknown'})
@@ -283,7 +267,6 @@ const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData, barChartIm
         );
     };
 
-     // --- Helper Function for SonarQube Metrics ---
      const renderSqMetric = (key, value) => {
         const label = getSqMetricLabel(key);
         let displayValue = value ?? '-';
@@ -316,7 +299,6 @@ const DevOpsReportDocument = ({ argoData, jenkinsData, sonarqubeData, barChartIm
             displayValue = value ?? '-';
         }
 
-        // Skip rendering ratings here as they are handled separately
         if (['alert_status', 'sqale_rating', 'security_rating', 'reliability_rating'].includes(key)) {
             return null;
         }

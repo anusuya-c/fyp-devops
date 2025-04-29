@@ -9,13 +9,11 @@ from notifications.models import Notification
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated # Import permission class
+from rest_framework.permissions import IsAuthenticated 
 
 logger = logging.getLogger(__name__)
 
-# --- Helper Function for Jenkins API Calls ---
 def make_jenkins_request(api_path):
-    """Makes an authenticated request to the Jenkins API."""
     jenkins_url = settings.JENKINS_URL
     username = settings.JENKINS_USERNAME
     api_token = settings.JENKINS_API_TOKEN
@@ -24,7 +22,6 @@ def make_jenkins_request(api_path):
          logger.error("Jenkins URL, Username, or API Token is not configured in Django settings.")
          return None, "Jenkins connection details missing in settings."
 
-    # Ensure JENKINS_URL doesn't end with a slash if api_path starts with one
     if jenkins_url.endswith('/') and api_path.startswith('/'):
         url = f"{jenkins_url}{api_path[1:]}"
     elif not jenkins_url.endswith('/') and not api_path.startswith('/'):
@@ -37,9 +34,9 @@ def make_jenkins_request(api_path):
     try:
         response = requests.get(url, auth=auth, timeout=15)
         response.raise_for_status()
-        if response.status_code == 204: # No Content
-            return {}, None # Success, but no JSON body
-        return response.json(), None # Success, return JSON data
+        if response.status_code == 204: 
+            return {}, None 
+        return response.json(), None 
     except requests.exceptions.Timeout:
         msg = f"Timeout connecting to Jenkins API ({url})"
         logger.error(msg)
@@ -62,21 +59,14 @@ def make_jenkins_request(api_path):
         return None, msg
 
 
-# --- DRF API View to List Jobs ---
 class JenkinsJobList(APIView):
-    """
-    API endpoint to list Jenkins jobs.
-    Requires authentication (valid JWT).
-    """
-    permission_classes = [IsAuthenticated] # Protect this view
+    permission_classes = [IsAuthenticated] 
 
     def get(self, request, format=None):
-        """Handles GET requests to list jobs."""
         api_path = 'api/json?tree=jobs[name,url]'
         data, error_msg = make_jenkins_request(api_path)
 
         if error_msg:
-            # Return a DRF error response
             return Response({'error': f'Failed to fetch jobs: {error_msg}'}, status=status.HTTP_502_BAD_GATEWAY)
 
         if data is not None and 'jobs' in data:
@@ -87,17 +77,11 @@ class JenkinsJobList(APIView):
             return Response({'jobs': []}, status=status.HTTP_200_OK)
 
 
-# --- DRF API View to Get Job Build Details ---
 class JenkinsJobDetail(APIView):
-    """
-    API endpoint to get build details for a specific Jenkins job.
-    Requires authentication (valid JWT).
-    """
-    permission_classes = [IsAuthenticated] # Protect this view
+
+    permission_classes = [IsAuthenticated] 
 
     def get(self, request, job_name, format=None):
-        """Handles GET requests for job details."""
-        # Fetch builds with commit info
         api_path = f"job/{job_name}/api/json?tree=builds[number,url,timestamp,duration,result,building,description,changeSet[items[msg,author[fullName]]]]"
         data, error_msg = make_jenkins_request(api_path)
 
@@ -117,10 +101,8 @@ class JenkinsJobDetail(APIView):
                 if start_time_ms is not None and duration_ms is not None and not building:
                     end_time_ms = start_time_ms + duration_ms
 
-                # Create notification for new builds
                 if build_number and build_result:
                     logger.info(f"Checking notification for build {build_number} of job {job_name}")
-                    # Check if notification already exists
                     existing_notification = Notification.objects.filter(
                         user=request.user,
                         build_number=build_number,
@@ -164,4 +146,4 @@ class JenkinsJobDetail(APIView):
             return Response({'builds': build_details}, status=status.HTTP_200_OK)
         else:
             logger.warning(f"Jenkins API response for job '{job_name}' details was unexpected or empty: {data}")
-            return Response({'builds': []}, status=status.HTTP_200_OK) # Return empty list if no builds found
+            return Response({'builds': []}, status=status.HTTP_200_OK) 
