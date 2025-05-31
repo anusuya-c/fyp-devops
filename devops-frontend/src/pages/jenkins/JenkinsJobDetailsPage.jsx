@@ -47,16 +47,7 @@ export default function JenkinsJobDetailsPage() {
     // Reload if the jobName parameter changes (might happen with complex navigation)
   }, [jobName]);
 
-  // Breadcrumbs for navigation
-  const breadcrumbItems = [
-    { title: 'Jenkins Jobs', href: '/jenkins-jobs' },
-    { title: jobName, href: `/jenkins-jobs/${jobName}/details` }, // Current page
-  ].map((item, index) => (
-
-    <Navigate to={item.href} key={index}>
-        {item.title}
-    </Navigate>
-  ));
+ 
 
   // Table rows rendering
   const rows = builds.map((build) => (

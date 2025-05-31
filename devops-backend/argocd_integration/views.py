@@ -57,25 +57,3 @@ def application_list_api(request):
     return JsonResponse(data, status=200, safe=False) 
 
 
-# --- Add more API views for other endpoints ---
-
-# Example: API View for Projects
-# def project_list_api(request):
-#     data, error, status_code = _make_argocd_request('/api/v1/projects') # Assuming endpoint
-#     if error:
-#          response_status = status_code if isinstance(status_code, int) else 500
-#          return JsonResponse({'error': error}, status=response_status)
-#
-#     # Return the full data or restructure as needed
-#     return JsonResponse(data, status=200)
-
-# Example: API View for Notifications
-# def notification_list_api(request):
-#     # Find the correct API endpoint for notifications
-#     # data, error, status_code = _make_argocd_request('/api/v1/YOUR_NOTIFICATION_ENDPOINT')
-#     # if error:
-#     #      response_status = status_code if isinstance(status_code, int) else 500
-#     #      return JsonResponse({'error': error}, status=response_status)
-#     #
-#     # return JsonResponse(data, status=200)
-#     pass

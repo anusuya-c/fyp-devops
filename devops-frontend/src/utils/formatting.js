@@ -1,7 +1,4 @@
-// src/utils/formatting.js
-
 /**
- * Formats duration in milliseconds to a human-readable string (e.g., 1m 30s 500ms).
  * @param {number} ms - Duration in milliseconds.
  * @returns {string} Formatted duration string.
  */

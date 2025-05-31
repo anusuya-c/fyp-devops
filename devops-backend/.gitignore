@@ -72,3 +72,5 @@ pip-log.txt
 pip-delete-this-directory.txt
 Pipfile.lock
 poetry.lock
+
+env

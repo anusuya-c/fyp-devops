@@ -42,26 +42,14 @@ export default function SonarQubeProjectsPage() {
             }
         };
 
-        loadProjects();
-    }, []); // Runs once on component mount
+        loadProjects(); //calling load projects function
+    }, []); // Runs once a page is loaded
 
-    // Breadcrumbs
-    const breadcrumbItems = [
-        // Add link to home/dashboard if you have one
-        // { title: 'Dashboard', href: '/' },
-        { title: 'SonarQube Projects', href: '/sonarqube-projects' }, // Current page
-    ].map((item, index) => (
-        // Use Anchor with RouterLink for correct breadcrumb navigation
-        <Anchor component={RouterLink} to={item.href} key={index}>
-            {item.title}
-        </Anchor>
-    ));
 
     // Table rows rendering
     const rows = projects.map((project) => (
         <Table.Tr key={project.key}>
             <Table.Td>
-                {/* Link to future details page */}
                 <Anchor component={RouterLink} to={`/sonarqube-projects/${project.key}/details`} fw={500}>
                     {project.name}
                 </Anchor>

@@ -46,7 +46,6 @@ export function AppSidebar() {
       // Use NavLink for routing
       to={item.path}
       key={item.label}
-      // Apply className, use function to check isActive for data-attribute
       className={({ isActive }) => classes.link} // Base class
       data-active={({ isActive }) => isActive ? 'true' : undefined} // Set data-active based on NavLink's state
     >
@@ -59,15 +58,10 @@ export function AppSidebar() {
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
         <Group className={classes.header} justify="space-between" >
-          {/* Replace MantineLogo with your app logo/name if desired */}
-          {/* <MantineLogo size={28} /> */}
           
             <Image src="/logo.png" alt="DevSecOps Monitor Logo"/>
           
-          {/* Optional: Version code */}
-          {/* <Code fw={700}>v1.0.0</Code> */}
         </Group>
-        {/* Render the NavLink elements */}
         {links}
       </div>
 

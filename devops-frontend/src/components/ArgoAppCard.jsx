@@ -90,27 +90,16 @@ function getStatusIcon(status) {
 }
 
 
-// --- Main Component ---
-// Changed function signature to accept 'app' prop
 function ArgoAppCard({ app }) {
-    // Log the received app object for debugging
-    // console.log('ArgoAppCard received app:', app);
 
     const theme = useMantineTheme();
 
-    // Check if the 'app' object itself is valid
-    // Checking for metadata is a good indicator
     if (!app || !app.metadata) {
-        // You might want a more specific message or different handling
-        // return <Card shadow="sm" padding="lg" radius="md" withBorder>Invalid application data passed.</Card>;
-         // Or return null if you prefer to just not render the card
+    
          return null;
     }
 
-    // 'app' is now directly the application object we need
-    // Removed: const app = data.items[0];
 
-    // Safely access nested properties using the 'app' prop
     const metadata = app.metadata || {};
     const spec = app.spec || {};
     const status = app.status || {};
@@ -123,7 +112,6 @@ function ArgoAppCard({ app }) {
     const lastSyncOperation = operationState;
 
 
-    // Sort history from newest to oldest
     const sortedHistory = [...history].sort((a, b) => (b.id ?? -1) - (a.id ?? -1)); // Added nullish coalescing for safety
 
     return (

@@ -1,4 +1,3 @@
-// src/App.jsx
 import "./App.css";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
@@ -10,10 +9,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 
-import RegisterPage from "./pages/auth/Register";
 import LoginPage from "./pages/auth/Login";
-import ForgotPassword from "./pages/auth/ForgotPassword";
-import ResetPassword from "./pages/auth/ResetPassword";
 import HomePage from "./pages/Home";
 import JenkinsJobsPage from "./pages/jenkins/JenkinsJobsPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
@@ -53,14 +49,7 @@ function App() {
               path="/login"
               element={<RedirectIfAuthenticated><LoginPage /></RedirectIfAuthenticated>}
             />
-            <Route
-              path="/forgot-password"
-              element={<RedirectIfAuthenticated><ForgotPassword /></RedirectIfAuthenticated>}
-            />
-            <Route
-              path="/reset-password/:uidb64/:token"
-              element={<RedirectIfAuthenticated><ResetPassword /></RedirectIfAuthenticated>}
-            />
+  
             <Route
               path="/"
               element={<ProtectedRoute><HomePage /></ProtectedRoute>}
@@ -88,14 +77,6 @@ function App() {
             <Route
               path="/argocd"
               element={<ProtectedRoute><ArgoCdApplicationsPage /></ProtectedRoute>}
-            />
-            <Route
-              path="/settings"
-              element={<ProtectedRoute><PlaceholderPage title="Settings" needsSidebar={true} /></ProtectedRoute>}
-            />
-            <Route
-              path="/other"
-              element={<ProtectedRoute><PlaceholderPage title="Other Section" needsSidebar={true} /></ProtectedRoute>}
             />
 
             {/* --- Catch-all --- */}

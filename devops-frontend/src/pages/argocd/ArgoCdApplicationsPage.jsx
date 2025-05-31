@@ -60,16 +60,7 @@ export default function ArgoCdApplicationsPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Run only once on component mount
 
-    // Breadcrumbs for navigation
-    const breadcrumbItems = [
-        { title: 'Home', href: '/' }, // Link to your dashboard or home
-        { title: 'Argo CD Applications', href: '/argocd-apps' }, // Current page
-    ].map((item, index) => (
-        // Consider using react-router-dom's Link if you use it for routing
-        <Anchor href={item.href} key={index}>
-            {item.title}
-        </Anchor>
-    ));
+
 
     return (
         // Layout wrapper (Flexbox) including the sidebar

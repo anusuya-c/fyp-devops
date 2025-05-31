@@ -24,7 +24,7 @@ class CustomPasswordResetView(auth_views.PasswordResetView):
             'request': self.request,
             'html_email_template_name': self.html_email_template_name,
             'extra_email_context': {
-                'frontend_domain': settings.FRONTEND_DOMAIN,
+                'frontend_domain': "http://localhost:5173/home",
                 'site_name': settings.SITE_NAME,
             }
         }
@@ -34,7 +34,7 @@ class CustomPasswordResetView(auth_views.PasswordResetView):
     def get_reset_url(self, user):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
-        return f"{settings.FRONTEND_URL}/reset-password?uid={uid}&token={token}"
+        return f"http://localhost:5173/reset-password?uid={uid}&token={token}"
 
     def send_mail(self, subject_template_name, email_template_name,
                   context, from_email, to_email, html_email_template_name=None):

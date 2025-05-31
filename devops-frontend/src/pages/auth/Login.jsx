@@ -51,7 +51,7 @@ export default function LoginPage() {
         general: "",
     });
 
-    // --- Login Handlers (keep as before) ---
+    //  Login Handlers
     const handleLoginChange = (event) => {
         const { name, value } = event.target;
         setLoginFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -89,7 +89,7 @@ export default function LoginPage() {
         await login(payload);
     };
 
-    // --- Register Handlers (keep as before) ---
+    // --- Register Handlers (keep as before) 
     const handleRegisterChange = (event) => {
         const { name, value } = event.target;
         setRegisterFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -165,7 +165,6 @@ export default function LoginPage() {
         }
     };
 
-    // --- Min height for tab panels to prevent layout shifts ---
     const panelMinHeight = 420; // Adjust this value as needed
 
     return (
@@ -185,7 +184,6 @@ export default function LoginPage() {
                     w={"50%"}
                 />
 
-                {/* Combined Login/Register Card + Switch Links */}
                 <Stack align="center" miw={420}> {/* Stack to hold Paper and switch links */}
                     <Paper withBorder shadow="md" p={30} radius="md" style={{ maxWidth: 420, width: '100%'}}>
                         <Tabs
@@ -194,10 +192,7 @@ export default function LoginPage() {
                             variant="pills" // Optional: Different tab style
                             radius="md" // Optional: Style
                         >
-                            {/* <Tabs.List grow>
-                                <Tabs.Tab value="login">Login</Tabs.Tab>
-                                <Tabs.Tab value="register">Register</Tabs.Tab>
-                            </Tabs.List> */}
+                     
 
                             {/* Login Panel */}
                             <Tabs.Panel value="login" pt="lg" >
@@ -206,9 +201,6 @@ export default function LoginPage() {
                                     <Stack>
                                         <TextInput required label="Username" placeholder="Your username" name="username" value={loginFormData.username} onChange={handleLoginChange} error={loginErrors.username || null} />
                                         <PasswordInput required label="Password" placeholder="Your password" name="userpassword" value={loginFormData.userpassword} onChange={handleLoginChange} error={loginErrors.userpassword || null} />
-                                        <Anchor component="button" type="button" onClick={() => navigate('/forgot-password')} size="sm" ta="right">
-                                            Forgot password?
-                                        </Anchor>
                                         {loginErrors.general && <Text c="red" size="sm" ta="center">{loginErrors.general}</Text>}
                                         <Button type="submit" fullWidth mt="md">Login</Button>
                                     </Stack>

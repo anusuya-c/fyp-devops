@@ -1,4 +1,3 @@
-// src/components/ReportGenerator.jsx
 import React, { useState } from 'react';
 import { Button, Group, Alert, Box, Text } from '@mantine/core';
 import { IconAlertCircle, IconDownload, IconFileAnalytics } from '@tabler/icons-react';
@@ -16,7 +15,6 @@ function ReportGenerator({barChartImg, donutChartImg}) {
     // --- Configuration ---
     const jenkinsJobName = 'pipeline';
     const sonarqubeProjectKey = 'website';
-    // --- ---
 
     const generateReport = async () => {
         setStatus('loading');
