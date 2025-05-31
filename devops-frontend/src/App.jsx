@@ -41,10 +41,7 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route
-              path="/register"
-              element={<RedirectIfAuthenticated><RegisterPage /></RedirectIfAuthenticated>}
-            />
+            
             <Route
               path="/login"
               element={<RedirectIfAuthenticated><LoginPage /></RedirectIfAuthenticated>}
